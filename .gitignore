@@ -2,7 +2,9 @@
 
 # dependencies
 node_modules/
-
+ios/
+.env*
+.npm*
 # Expo
 .expo/
 dist/
