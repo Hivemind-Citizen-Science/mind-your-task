@@ -206,7 +206,7 @@ export const SwipeInteraction: React.FC<SwipeInteractionProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA', // Light background as per spec
+    backgroundColor: colors.background, // Match app theme background
   },
   gestureArea: {
     flex: 1,

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors, typography, spacing } from '../theme'
 
 export const HomeScreen: React.FC = () => {
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -13,6 +14,9 @@ export const HomeScreen: React.FC = () => {
         </Text>
         <Text style={styles.message}>
           For now, you've successfully completed the calibration task!
+        </Text>
+        <Text style={styles.message}>
+          Use the menu button (☰) in the top-right corner to access the component library from anywhere in the app.
         </Text>
       </View>
     </SafeAreaView>

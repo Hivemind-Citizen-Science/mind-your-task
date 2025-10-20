@@ -159,7 +159,7 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
       {/* Feedback Overlay */}
       {showFeedback && trialResult && (
         <FeedbackOverlay
-          isCorrect={trialResult.is_correct}
+          isCorrect={trialResult.is_correct ?? false}
           position={feedbackPosition}
           onAnimationComplete={handleFeedbackComplete}
         />

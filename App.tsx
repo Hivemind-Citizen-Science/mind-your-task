@@ -4,6 +4,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { ErrorBoundary } from './src/components/common/ErrorBoundary'
 import { MobileContainer } from './src/components/common/MobileContainer'
+import { DrawerProvider } from './src/contexts/DrawerContext'
 import { AppNavigator } from './src/navigation/AppNavigator'
 import { initializeApp } from './src/utils/initializeApp'
 import { colors, typography } from './src/theme'
@@ -31,11 +32,13 @@ export default function App() {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ErrorBoundary>
+        <DrawerProvider>
           <MobileContainer>
             <View style={styles.loadingContainer}>
               <Text style={styles.loadingText}>Initializing...</Text>
             </View>
           </MobileContainer>
+        </DrawerProvider>
         </ErrorBoundary>
       </GestureHandlerRootView>
     )
@@ -44,10 +47,12 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ErrorBoundary>
-        <StatusBar style="auto" />
-        <MobileContainer>
-          <AppNavigator />
-        </MobileContainer>
+        <DrawerProvider>
+          <StatusBar style="auto" />
+          <MobileContainer>
+            <AppNavigator />
+          </MobileContainer>
+        </DrawerProvider>
       </ErrorBoundary>
     </GestureHandlerRootView>
   )
