@@ -31,4 +31,6 @@ npm -v
 echo "===== Running npm install ====="
 npm install 
 npx expo prebuild
-# ls ios
+
+echo "===== Debug: iOS directory contents ====="
+ls -la ios
