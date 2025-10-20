@@ -18,7 +18,10 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.cervere.research.mindyourtask"
+      "bundleIdentifier": "com.cervere.research.mindyourtask",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -27,8 +30,6 @@
       },
       "package": "com.cervere.research.mindyourtask"
     },
-    "plugins": [
-      // "react-native-reanimated/plugin" - will be added in Phase 1
-    ]
+    "plugins": []
   }
 }
