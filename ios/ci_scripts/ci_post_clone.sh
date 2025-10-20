@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #  ci_post_clone.sh
-# Go-NoGo 
+#  Mind Your Task
 #
 # Navigate to the project root
 cd ../../
