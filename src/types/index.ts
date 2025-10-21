@@ -138,10 +138,10 @@ export type RootStackParamList = {
   Registration: undefined
   Calibration: undefined
   Home: undefined
+  Task: { taskType: 'calibration' | 'dot_kinematogram' | 'halo_travel' }
+  SessionCompletion: { sessionId: string }
   TaskInstructions: { taskType: string }
   Practice: { taskType: string }
-  Task: { taskType: string; isPractice: boolean }
-  SessionCompletion: { sessionId: string }
   SecretSettings: undefined
 }
 

@@ -27,20 +27,17 @@ interface ComponentShowcaseProps {
   name: string
   description: string
   component: React.ReactNode
-  category: string
 }
 
 const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({ 
   name, 
   description, 
-  component, 
-  category 
+  component
 }) => {
   return (
     <View style={styles.showcaseItem}>
       <View style={styles.showcaseHeader}>
         <Text style={styles.componentName}>{name}</Text>
-        <Text style={styles.componentCategory}>{category}</Text>
       </View>
       <Text style={styles.componentDescription}>{description}</Text>
       <View style={styles.componentContainer}>
@@ -54,7 +51,6 @@ interface ScreenNavigationProps {
   name: string
   description: string
   screenName: keyof RootStackParamList
-  category: string
   onNavigate: () => void
 }
 
@@ -62,14 +58,12 @@ const ScreenNavigation: React.FC<ScreenNavigationProps> = ({
   name, 
   description, 
   screenName,
-  category,
   onNavigate
 }) => {
   return (
     <View style={styles.showcaseItem}>
       <View style={styles.showcaseHeader}>
         <Text style={styles.componentName}>{name}</Text>
-        <Text style={styles.componentCategory}>{category}</Text>
       </View>
       <Text style={styles.componentDescription}>{description}</Text>
       <TouchableOpacity 
@@ -82,9 +76,57 @@ const ScreenNavigation: React.FC<ScreenNavigationProps> = ({
   )
 }
 
+interface CollapsibleSectionProps {
+  title: string
+  children: React.ReactNode
+  isExpanded: boolean
+  onToggle: () => void
+}
+
+const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ 
+  title, 
+  children, 
+  isExpanded, 
+  onToggle 
+}) => {
+  return (
+    <View style={styles.categorySection}>
+      <TouchableOpacity 
+        style={styles.categoryHeader} 
+        onPress={onToggle}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.categoryTitle}>{title}</Text>
+        <Text style={styles.expandIcon}>{isExpanded ? '▼' : '▶'}</Text>
+      </TouchableOpacity>
+      {isExpanded && (
+        <View style={styles.categoryContent}>
+          {children}
+        </View>
+      )}
+    </View>
+  )
+}
+
 export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, onNavigate }) => {
   const [translateX] = useState(new Animated.Value(DRAWER_WIDTH))
   const [gestureX] = useState(new Animated.Value(0))
+  
+  // State for tracking which sections are expanded
+  const [expandedSections, setExpandedSections] = useState({
+    commonComponents: true,
+    trialFlowComponents: true,
+    swipeInteractionComponents: true,
+    errorHandling: true,
+    screenNavigation: true,
+  })
+  
+  const toggleSection = (sectionKey: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionKey]: !prev[sectionKey]
+    }))
+  }
 
   React.useEffect(() => {
     if (isVisible) {
@@ -163,13 +205,14 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
           
           <ScrollView style={styles.drawerContent} showsVerticalScrollIndicator={false}>
             {/* Common Components */}
-            <View style={styles.categorySection}>
-              <Text style={styles.categoryTitle}>Common Components</Text>
-              
+            <CollapsibleSection
+              title="Common Components"
+              isExpanded={expandedSections.commonComponents}
+              onToggle={() => toggleSection('commonComponents')}
+            >
               <ComponentShowcase
                 name="Button"
                 description="Reusable button component with primary and secondary variants"
-                category="Common"
                 component={
                   <View style={styles.buttonShowcase}>
                     <TouchableOpacity style={styles.primaryButton}>
@@ -185,7 +228,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="Card"
                 description="Container component with elevation and rounded corners"
-                category="Common"
                 component={
                   <View style={styles.cardShowcase}>
                     <Text style={styles.cardText}>Card Content</Text>
@@ -196,23 +238,23 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="MobileContainer"
                 description="Web mobile simulation wrapper for consistent mobile experience"
-                category="Common"
                 component={
                   <View style={styles.mobileContainerShowcase}>
                     <Text style={styles.mobileContainerText}>Mobile Container</Text>
                   </View>
                 }
               />
-            </View>
+            </CollapsibleSection>
 
             {/* TrialFlow Components */}
-            <View style={styles.categorySection}>
-              <Text style={styles.categoryTitle}>TrialFlow Components</Text>
-              
+            <CollapsibleSection
+              title="TrialFlow Components"
+              isExpanded={expandedSections.trialFlowComponents}
+              onToggle={() => toggleSection('trialFlowComponents')}
+            >
               <ComponentShowcase
                 name="StartButton"
                 description="Button to initiate trial sequences"
-                category="TrialFlow"
                 component={
                   <TouchableOpacity style={styles.startButtonShowcase}>
                     <Text style={styles.startButtonText}>Start Trial</Text>
@@ -223,7 +265,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="FixationCross"
                 description="Cross-hair for fixation periods"
-                category="TrialFlow"
                 component={
                   <View style={styles.fixationCrossShowcase}>
                     <View style={styles.horizontalLine} />
@@ -235,7 +276,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="FeedbackOverlay"
                 description="Animated feedback circle for trial results"
-                category="TrialFlow"
                 component={
                   <View style={styles.feedbackShowcase}>
                     <View style={[styles.feedbackCircle, { backgroundColor: colors.feedbackCorrect }]} />
@@ -243,16 +283,17 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                   </View>
                 }
               />
-            </View>
+            </CollapsibleSection>
 
             {/* SwipeInteraction Components */}
-            <View style={styles.categorySection}>
-              <Text style={styles.categoryTitle}>SwipeInteraction Components</Text>
-              
+            <CollapsibleSection
+              title="SwipeInteraction Components"
+              isExpanded={expandedSections.swipeInteractionComponents}
+              onToggle={() => toggleSection('swipeInteractionComponents')}
+            >
               <ComponentShowcase
                 name="ChoiceZone"
                 description="Left and right choice areas for swipe interactions"
-                category="SwipeInteraction"
                 component={
                   <View style={styles.choiceZoneShowcase}>
                     <View style={styles.choiceZoneLeft}>
@@ -268,7 +309,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="Coin"
                 description="Draggable coin element for swipe gestures"
-                category="SwipeInteraction"
                 component={
                   <View style={styles.coinShowcase}>
                     <View style={styles.coin} />
@@ -279,7 +319,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="StartZone"
                 description="Starting position zone for swipe interactions"
-                category="SwipeInteraction"
                 component={
                   <View style={styles.startZoneShowcase}>
                     <View style={styles.startZone} />
@@ -290,7 +329,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="Trail"
                 description="Swipe trajectory visualization component"
-                category="SwipeInteraction"
                 component={
                   <View style={styles.trailShowcase}>
                     <View style={styles.trailLine} />
@@ -301,7 +339,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               <ComponentShowcase
                 name="SwipeInteraction"
                 description="Complete swipe interaction system with gesture detection, trajectory recording, and visual feedback"
-                category="SwipeInteraction"
                 component={
                   <View style={styles.swipeInteractionShowcase}>
                     <View style={styles.swipeInteractionContainer}>
@@ -320,16 +357,17 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                   </View>
                 }
               />
-            </View>
+            </CollapsibleSection>
 
             {/* Error Boundary */}
-            <View style={styles.categorySection}>
-              <Text style={styles.categoryTitle}>Error Handling</Text>
-              
+            <CollapsibleSection
+              title="Error Handling"
+              isExpanded={expandedSections.errorHandling}
+              onToggle={() => toggleSection('errorHandling')}
+            >
               <ComponentShowcase
                 name="ErrorBoundary"
                 description="Error boundary component for graceful error handling"
-                category="Error Handling"
                 component={
                   <View style={styles.errorBoundaryShowcase}>
                     <Text style={styles.errorText}>Error Boundary</Text>
@@ -337,17 +375,18 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                   </View>
                 }
               />
-            </View>
+            </CollapsibleSection>
 
             {/* Screen Navigation */}
-            <View style={styles.categorySection}>
-              <Text style={styles.categoryTitle}>Screen Navigation</Text>
-              
+            <CollapsibleSection
+              title="Screen Navigation"
+              isExpanded={expandedSections.screenNavigation}
+              onToggle={() => toggleSection('screenNavigation')}
+            >
               <ScreenNavigation
                 name="Welcome Screen"
                 description="Initial welcome screen with app introduction and get started button"
                 screenName="Welcome"
-                category="Screen Navigation"
                 onNavigate={() => {
                   onClose()
                   onNavigate?.('Welcome')
@@ -358,7 +397,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                 name="Calibration Screen"
                 description="Trial flow screen with fixation cross, choice zones, and trial counter"
                 screenName="Calibration"
-                category="Screen Navigation"
                 onNavigate={() => {
                   onClose()
                   onNavigate?.('Calibration')
@@ -369,7 +407,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                 name="Home Screen"
                 description="Post-calibration home screen with completion message"
                 screenName="Home"
-                category="Screen Navigation"
                 onNavigate={() => {
                   onClose()
                   onNavigate?.('Home')
@@ -377,10 +414,29 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               />
               
               <ScreenNavigation
+                name="Task Screen"
+                description="Main task execution screen for calibration, dot kinematogram, and halo travel tasks"
+                screenName="Task"
+                onNavigate={() => {
+                  onClose()
+                  onNavigate?.('Task')
+                }}
+              />
+              
+              <ScreenNavigation
+                name="Session Completion Screen"
+                description="Post-session summary screen showing completion status and results"
+                screenName="SessionCompletion"
+                onNavigate={() => {
+                  onClose()
+                  onNavigate?.('SessionCompletion')
+                }}
+              />
+              
+              <ScreenNavigation
                 name="Component Library Screen"
                 description="Component showcase screen with feature list and instructions"
                 screenName="ComponentLibrary"
-                category="Screen Navigation"
                 onNavigate={() => {
                   onClose()
                   onNavigate?.('ComponentLibrary')
@@ -391,13 +447,12 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                 name="SwipeInteraction Screen"
                 description="Interactive swipe interface showing choice zones, start zone, coin, and trajectory visualization"
                 screenName="SwipeInteraction"
-                category="Screen Navigation"
                 onNavigate={() => {
                   onClose()
                   onNavigate?.('SwipeInteraction')
                 }}
               />
-            </View>
+            </CollapsibleSection>
           </ScrollView>
         </Animated.View>
     </>
@@ -461,13 +516,27 @@ const styles = StyleSheet.create({
   categorySection: {
     marginBottom: spacing.xl,
   },
-  categoryTitle: {
-    ...typography.heading3,
-    color: colors.textPrimary,
-    marginBottom: spacing.md,
+  categoryHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingBottom: spacing.sm,
     borderBottomWidth: 2,
     borderBottomColor: colors.primary,
+    marginBottom: spacing.md,
+  },
+  categoryTitle: {
+    ...typography.heading3,
+    color: colors.textPrimary,
+    flex: 1,
+  },
+  expandIcon: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    marginLeft: spacing.sm,
+  },
+  categoryContent: {
+    // Content styles are handled by the children components
   },
   showcaseItem: {
     backgroundColor: colors.background,

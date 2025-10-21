@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { WelcomeScreen } from '../screens/WelcomeScreen'
 import { CalibrationScreen } from '../screens/CalibrationScreen'
 import { HomeScreen } from '../screens/HomeScreen'
+import { TaskScreen } from '../screens/TaskScreen'
+import { SessionCompletionScreen } from '../screens/SessionCompletionScreen'
 import { ComponentLibraryScreen } from '../screens/ComponentLibraryScreen'
 import { SwipeInteractionScreen } from '../screens/SwipeInteractionScreen'
 import { GlobalDrawer } from '../components/common/GlobalDrawer'
@@ -16,7 +18,7 @@ export const AppNavigator: React.FC = () => {
     <NavigationContainer>
       <GlobalDrawer>
         <Stack.Navigator 
-          initialRouteName="Welcome"
+          initialRouteName="Home"
           screenOptions={{ 
             headerShown: false,
             gestureEnabled: true,
@@ -38,6 +40,20 @@ export const AppNavigator: React.FC = () => {
           <Stack.Screen 
             name="Home" 
             component={HomeScreen}
+          />
+          <Stack.Screen 
+            name="Task" 
+            component={TaskScreen}
+            options={{
+              headerShown: false
+            }}
+          />
+          <Stack.Screen 
+            name="SessionCompletion" 
+            component={SessionCompletionScreen}
+            options={{
+              headerShown: false
+            }}
           />
           <Stack.Screen 
             name="ComponentLibrary" 

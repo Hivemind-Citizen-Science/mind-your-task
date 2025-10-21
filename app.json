@@ -30,6 +30,10 @@
       },
       "package": "com.cervere.research.mindyourtask"
     },
-    "plugins": []
+    "plugins": [],
+    "extra": {
+      "apiUrl": "process.env.EXPO_PUBLIC_API_URL",
+      "researcherPasscode": "process.env.EXPO_PUBLIC_RESEARCHER_PASSCODE"
+    }
   }
 }

@@ -1,438 +1,306 @@
 import React from 'react'
-import { View, Text, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { colors, typography, spacing } from '../../theme'
+import { SessionCompletionScreen } from '../../screens/SessionCompletionScreen'
+import { TaskScreen } from '../../screens/TaskScreen'
+import { WelcomeScreen } from '../../screens/WelcomeScreen'
+import { CalibrationScreen } from '../../screens/CalibrationScreen'
+import { HomeScreen } from '../../screens/HomeScreen'
+import { ComponentLibraryScreen } from '../../screens/ComponentLibraryScreen'
+import { SwipeInteractionScreen } from '../../screens/SwipeInteractionScreen'
+import { Session, Trial } from '../../types'
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
-const MOCKUP_WIDTH = screenWidth * 0.6
-const MOCKUP_HEIGHT = screenHeight * 0.4
+const Stack = createNativeStackNavigator()
 
-interface ScreenShowcaseProps {
-  name: string
-  description: string
-  component: React.ReactNode
-  category: string
+// Mock data generators
+const generateMockSession = (): Session => ({
+  session_id: 'mock-session-123',
+  user_id: 'mock-user',
+  task_type: 'dot_kinematogram',
+  started_at: Date.now() - 300000, // 5 minutes ago
+  completed_at: Date.now(),
+  status: 'completed',
+  total_trials: 20,
+  completed_trials: 20,
+  correct_trials: 16,
+  accuracy: 80,
+  avg_response_time: 1200,
+  device_info: {
+    platform: 'iOS',
+    version: '17.0',
+    model: 'iPhone 15 Pro'
+  },
+  study_config: {
+    study_id: 'mock-study',
+    version: '1.0.0',
+    created_at: Date.now() - 86400000
+  }
+})
+
+const generateMockTrials = (sessionId: string): Trial[] => {
+  const trials: Trial[] = []
+  for (let i = 0; i < 20; i++) {
+    trials.push({
+      trial_id: `trial-${i + 1}`,
+      session_id: sessionId,
+      user_id: 'mock-user',
+      trial_index: i,
+      trial_type: 'dot_kinematogram',
+      trial_parameters: {
+        coherence: 0.5,
+        direction: Math.random() > 0.5 ? 'left' : 'right',
+        aperture_shape: 'circle',
+        aperture_size: 5,
+        dot_count: 100,
+        stimulus_duration: 2000
+      },
+      user_response: Math.random() > 0.5 ? 'left' : 'right',
+      is_correct: Math.random() > 0.2, // 80% accuracy
+      response_time_ms: Math.floor(Math.random() * 2000) + 500,
+      trajectory_data: [],
+      timestamp: Date.now() - (20 - i) * 10000,
+      synced: true,
+      no_response: false
+    })
+  }
+  return trials
 }
 
-export const ScreenShowcase: React.FC<ScreenShowcaseProps> = ({ 
-  name, 
-  description, 
-  component, 
-  category 
-}) => {
+// Mock navigation and route props
+const createMockNavigation = () => ({
+  navigate: (screen: string, params?: any) => {
+    console.log(`Mock navigation to ${screen}`, params)
+  },
+  goBack: () => {
+    console.log('Mock go back')
+  },
+  canGoBack: () => true,
+  reset: () => {},
+  setParams: () => {},
+  dispatch: () => {},
+  isFocused: () => true,
+  addListener: () => () => {},
+  removeListener: () => {},
+  getParent: () => undefined,
+  getState: () => ({} as any),
+  setOptions: () => {},
+  getId: () => 'mock-navigator'
+})
+
+const createMockRoute = (params: any) => ({
+  key: 'mock-route',
+  name: 'mock-screen',
+  params,
+  path: undefined
+})
+
+// Screen showcase components
+export const SessionCompletionScreenShowcase: React.FC = () => {
+  const mockSession = generateMockSession()
+  const mockTrials = generateMockTrials(mockSession.session_id)
+  
+  // Mock the storage functions
+  const originalGetSessionById = require('../../utils/sessionManager').getSessionById
+  const originalGetTrialsBySession = require('../../utils/storage').getTrialsBySession
+  const originalGetSyncStatus = require('../../utils/trialSyncManager').getSyncStatus
+  
+  // Temporarily override the functions
+  require('../../utils/sessionManager').getSessionById = () => mockSession
+  require('../../utils/storage').getTrialsBySession = () => mockTrials
+  require('../../utils/trialSyncManager').getSyncStatus = () => ({
+    isOnline: true,
+    pendingTrials: 0,
+    lastSyncAttempt: Date.now()
+  })
+
   return (
-    <View style={styles.showcaseItem}>
-      <View style={styles.showcaseHeader}>
-        <Text style={styles.screenName}>{name}</Text>
-        <Text style={styles.screenCategory}>{category}</Text>
-      </View>
-      <Text style={styles.screenDescription}>{description}</Text>
-      <View style={styles.screenContainer}>
-        {component}
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Session Completion Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="SessionCompletion" 
+                component={SessionCompletionScreen}
+                initialParams={{ sessionId: mockSession.session_id }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </View>
     </View>
   )
 }
 
-// Welcome Screen Mockup
-export const WelcomeScreenMockup: React.FC = () => {
+export const TaskScreenShowcase: React.FC = () => {
+  // Mock the storage functions for TaskScreen
+  const mockStudyConfig = {
+    study_id: 'mock-study',
+    version: '1.0.0',
+    created_at: Date.now() - 86400000,
+    task_configs: {
+      dot_kinematogram: {
+        enabled: true,
+        trials_per_session: 20,
+        coherence_levels: [0.1, 0.2, 0.3, 0.4, 0.5],
+        directions: ['left', 'right'],
+        aperture_shapes: ['circle', 'square'],
+        aperture_sizes: [3, 5, 7],
+        dot_counts: [50, 100, 150],
+        stimulus_durations: [1000, 1500, 2000]
+      }
+    }
+  }
+
+  // Temporarily override the functions
+  require('../../utils/storage').getStudyConfig = () => mockStudyConfig
+  require('../../utils/sessionManager').createSession = () => generateMockSession()
+  require('../../utils/sessionManager').saveSessionData = () => {}
+  require('../../utils/trialSyncManager').saveTrialAndQueue = () => {}
+
   return (
-    <View style={styles.screenMockup}>
-      <View style={styles.mockupHeader}>
-        <Text style={styles.mockupTitle}>Mind Your Task</Text>
-        <Text style={styles.mockupSubtitle}>Research Task App</Text>
-        <Text style={styles.mockupPhase}>Phase 1: Calibration</Text>
-      </View>
-      
-      <View style={styles.mockupDescription}>
-        <Text style={styles.mockupDescriptionText}>
-          Welcome to the research task application...
-        </Text>
-      </View>
-      
-      <View style={styles.mockupButtonContainer}>
-        <View style={styles.mockupButton}>
-          <Text style={styles.mockupButtonText}>Get Started</Text>
-        </View>
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Task Screen (Dot Kinematogram)</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="Task" 
+                component={TaskScreen}
+                initialParams={{ taskType: 'dot_kinematogram' }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </View>
     </View>
   )
 }
 
-// Calibration Screen Mockup
-export const CalibrationScreenMockup: React.FC = () => {
+export const WelcomeScreenShowcase: React.FC = () => {
   return (
-    <View style={styles.screenMockup}>
-      <View style={styles.mockupTrialCounter}>
-        <Text style={styles.mockupCounterText}>Trial 3 of 10</Text>
-      </View>
-      
-      <View style={styles.mockupCenterContent}>
-        <View style={styles.mockupFixationCross}>
-          <View style={styles.mockupHorizontalLine} />
-          <View style={styles.mockupVerticalLine} />
-        </View>
-      </View>
-      
-      <View style={styles.mockupSwipeArea}>
-        <View style={styles.mockupChoiceZoneLeft}>
-          <Text style={styles.mockupChoiceText}>LEFT</Text>
-        </View>
-        <View style={styles.mockupChoiceZoneRight}>
-          <Text style={styles.mockupChoiceText}>RIGHT</Text>
-        </View>
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Welcome Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="Welcome" 
+                component={() => <WelcomeScreen onGetStarted={() => console.log('Mock get started')} />}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </View>
     </View>
   )
 }
 
-// Home Screen Mockup
-export const HomeScreenMockup: React.FC = () => {
+export const CalibrationScreenShowcase: React.FC = () => {
   return (
-    <View style={styles.screenMockup}>
-      <View style={styles.mockupHomeContent}>
-        <Text style={styles.mockupHomeTitle}>Home Screen</Text>
-        <Text style={styles.mockupHomeMessage}>
-          Phase 2 will build the full home screen...
-        </Text>
-        <Text style={styles.mockupHomeMessage}>
-          For now, you've successfully completed the calibration task!
-        </Text>
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Calibration Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="Calibration" 
+                component={CalibrationScreen}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </View>
     </View>
   )
 }
 
-// Component Library Screen Mockup
-export const ComponentLibraryScreenMockup: React.FC = () => {
+export const HomeScreenShowcase: React.FC = () => {
   return (
-    <View style={styles.screenMockup}>
-      <View style={styles.mockupLibraryHeader}>
-        <Text style={styles.mockupLibraryTitle}>Component Library</Text>
-        <Text style={styles.mockupLibrarySubtitle}>
-          Explore all stateless components in the app
-        </Text>
-      </View>
-      
-      <View style={styles.mockupLibraryContent}>
-        <Text style={styles.mockupLibraryText}>
-          Tap the menu button to open the component drawer...
-        </Text>
-        
-        <View style={styles.mockupFeatureList}>
-          <Text style={styles.mockupFeatureTitle}>Features:</Text>
-          <Text style={styles.mockupFeatureItem}>• Interactive component showcase</Text>
-          <Text style={styles.mockupFeatureItem}>• Organized by component categories</Text>
-        </View>
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Home Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="Home" 
+                component={HomeScreen}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </View>
     </View>
   )
 }
 
-// Color Palette Mockup
-export const ColorPaletteMockup: React.FC = () => {
+export const ComponentLibraryScreenShowcase: React.FC = () => {
   return (
-    <View style={styles.screenMockup}>
-      <Text style={styles.mockupPaletteTitle}>Color Palette</Text>
-      <View style={styles.mockupColorGrid}>
-        <View style={styles.mockupColorRow}>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.primary }]}>
-            <Text style={styles.mockupColorLabel}>Primary</Text>
-          </View>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.background }]}>
-            <Text style={styles.mockupColorLabel}>Background</Text>
-          </View>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.surface }]}>
-            <Text style={styles.mockupColorLabel}>Surface</Text>
-          </View>
-        </View>
-        <View style={styles.mockupColorRow}>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.success }]}>
-            <Text style={styles.mockupColorLabel}>Success</Text>
-          </View>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.error }]}>
-            <Text style={styles.mockupColorLabel}>Error</Text>
-          </View>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.warning }]}>
-            <Text style={styles.mockupColorLabel}>Warning</Text>
-          </View>
-        </View>
-        <View style={styles.mockupColorRow}>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.textPrimary }]}>
-            <Text style={[styles.mockupColorLabel, { color: colors.background }]}>Text Primary</Text>
-          </View>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.textSecondary }]}>
-            <Text style={[styles.mockupColorLabel, { color: colors.background }]}>Text Secondary</Text>
-          </View>
-          <View style={[styles.mockupColorSwatch, { backgroundColor: colors.border }]}>
-            <Text style={[styles.mockupColorLabel, { color: colors.background }]}>Border</Text>
-          </View>
-        </View>
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Component Library Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="ComponentLibrary" 
+                component={ComponentLibraryScreen}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
+      </View>
+    </View>
+  )
+}
+
+export const SwipeInteractionScreenShowcase: React.FC = () => {
+  return (
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Swipe Interaction Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="SwipeInteraction" 
+                component={SwipeInteractionScreen}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  showcaseItem: {
+  showcaseContainer: {
     backgroundColor: colors.background,
-    borderRadius: 12,
-    padding: spacing.md,
-    marginBottom: spacing.md,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.border,
+    overflow: 'hidden',
   },
-  showcaseHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  screenName: {
-    ...typography.body,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  screenCategory: {
+  showcaseLabel: {
     ...typography.caption,
     color: colors.textSecondary,
-    backgroundColor: colors.primary,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  screenDescription: {
-    ...typography.bodySmall,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
-  },
-  screenContainer: {
-    alignItems: 'center',
-    padding: spacing.sm,
-  },
-  
-  // Screen mockup styles
-  screenMockup: {
-    width: MOCKUP_WIDTH,
-    height: MOCKUP_HEIGHT,
-    backgroundColor: colors.background,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.border,
-    padding: spacing.sm,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  
-  // Welcome screen mockup
-  mockupHeader: {
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  mockupTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  mockupSubtitle: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  mockupPhase: {
-    fontSize: 10,
-    color: colors.primary,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  mockupDescription: {
-    marginBottom: spacing.sm,
-  },
-  mockupDescriptionText: {
-    fontSize: 8,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 12,
-  },
-  mockupButtonContainer: {
-    width: '100%',
-  },
-  mockupButton: {
-    backgroundColor: colors.buttonPrimary,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  mockupButtonText: {
-    fontSize: 10,
-    color: colors.textPrimary,
-    fontWeight: '600',
-  },
-  
-  // Calibration screen mockup
-  mockupTrialCounter: {
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  mockupCounterText: {
-    fontSize: 10,
-    color: colors.textSecondary,
-  },
-  mockupCenterContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  mockupFixationCross: {
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mockupHorizontalLine: {
-    position: 'absolute',
-    width: 10,
-    height: 1.5,
-    backgroundColor: colors.stimulusElement,
-    borderRadius: 1,
-  },
-  mockupVerticalLine: {
-    position: 'absolute',
-    width: 1.5,
-    height: 10,
-    backgroundColor: colors.stimulusElement,
-    borderRadius: 1,
-  },
-  mockupSwipeArea: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.sm,
-  },
-  mockupChoiceZoneLeft: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#E3F2FD',
-    borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mockupChoiceZoneRight: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#E3F2FD',
-    borderWidth: 1,
-    borderColor: 'rgba(74, 144, 226, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mockupChoiceText: {
-    fontSize: 8,
-    color: '#4A90E2',
-    fontWeight: '600',
-  },
-  
-  // Home screen mockup
-  mockupHomeContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mockupHomeTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    textAlign: 'center',
-    marginBottom: spacing.sm,
-  },
-  mockupHomeMessage: {
-    fontSize: 8,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 12,
-    marginBottom: 4,
-  },
-  
-  // Component library screen mockup
-  mockupLibraryHeader: {
-    marginBottom: spacing.sm,
-  },
-  mockupLibraryTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: 4,
-  },
-  mockupLibrarySubtitle: {
-    fontSize: 8,
-    color: colors.textSecondary,
-  },
-  mockupLibraryContent: {
-    flex: 1,
-  },
-  mockupLibraryText: {
-    fontSize: 8,
-    color: colors.textPrimary,
-    lineHeight: 12,
-    marginBottom: spacing.sm,
-  },
-  mockupFeatureList: {
     backgroundColor: colors.surface,
-    padding: spacing.xs,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  mockupFeatureTitle: {
-    fontSize: 8,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 4,
-  },
-  mockupFeatureItem: {
-    fontSize: 7,
-    color: colors.textSecondary,
-    marginBottom: 2,
-  },
-  
-  // Color palette mockup
-  mockupPaletteTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
+    padding: spacing.sm,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  mockupColorGrid: {
-    flex: 1,
-  },
-  mockupColorRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: spacing.xs,
-  },
-  mockupColorSwatch: {
-    width: 40,
-    height: 20,
-    borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  mockupColorLabel: {
-    fontSize: 6,
-    color: colors.textPrimary,
-    fontWeight: '600',
-    textAlign: 'center',
+  screenWrapper: {
+    height: 400, // Fixed height for showcase
+    overflow: 'hidden',
   },
 })
