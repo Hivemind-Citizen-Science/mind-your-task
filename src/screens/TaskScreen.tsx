@@ -174,7 +174,6 @@ export const TaskScreen: React.FC = () => {
             apertureSize={trial.trial_parameters.aperture_size}
             dotCount={trial.trial_parameters.dot_count}
             duration={trial.trial_parameters.stimulus_duration}
-            onComplete={commonProps.onComplete}
           />
         )
       
