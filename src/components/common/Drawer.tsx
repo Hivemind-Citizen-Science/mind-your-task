@@ -71,7 +71,7 @@ const ScreenNavigation: React.FC<ScreenNavigationProps> = ({
         style={styles.navigationButton}
         onPress={onNavigate}
       >
-        <Text style={styles.navigationButtonText}>View {name}</Text>
+        <Text style={styles.navigationButtonText}>View</Text>
       </TouchableOpacity>
     </View>
   )
@@ -219,10 +219,10 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                 component={
                   <View style={styles.buttonShowcase}>
                     <TouchableOpacity style={styles.primaryButton}>
-                      <Text style={styles.buttonText}>Primary Button</Text>
+                      <Text style={styles.buttonText}>Primary</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.secondaryButton}>
-                      <Text style={styles.secondaryButtonText}>Secondary Button</Text>
+                      <Text style={styles.secondaryButtonText}>Secondary</Text>
                     </TouchableOpacity>
                   </View>
                 }
@@ -710,9 +710,9 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   choiceZoneLeft: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#E3F2FD',
     borderWidth: 2,
     borderColor: 'rgba(74, 144, 226, 0.3)',
@@ -720,9 +720,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   choiceZoneRight: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#E3F2FD',
     borderWidth: 2,
     borderColor: 'rgba(74, 144, 226, 0.3)',
