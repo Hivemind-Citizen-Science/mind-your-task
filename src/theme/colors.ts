@@ -51,4 +51,10 @@ export const colors = {
   online: '#4CAF50',
   offline: '#F44336',
   syncing: '#FF9800',
+  
+  // Additional UI colors
+  disabled: '#3A4451',        // Disabled state background
+  accent: '#FF9800',          // Accent color for badges
+  white: '#FFFFFF',           // Pure white
+  shadow: '#000000',          // Shadow color
 } as const

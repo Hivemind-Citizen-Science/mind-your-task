@@ -40,9 +40,10 @@ export const TaskList: React.FC<TaskListProps> = ({
       <Text style={styles.title}>{title}</Text>
       <ScrollView 
         style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {tasks.map((task) => (
+        {tasks.map((task, index) => (
           <TaskCard
             key={task.id}
             taskName={task.name}
@@ -52,6 +53,7 @@ export const TaskList: React.FC<TaskListProps> = ({
             isRunning={task.isRunning}
             showNewBadge={task.showNewBadge}
             onPress={() => onTaskPress(task.id)}
+            isLast={index === tasks.length - 1}
           />
         ))}
       </ScrollView>
@@ -72,6 +74,9 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     paddingHorizontal: spacing.lg,
+  },
+  scrollContent: {
+    paddingBottom: spacing.lg,
   },
   emptyState: {
     flex: 1,

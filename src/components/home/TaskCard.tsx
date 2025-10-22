@@ -10,6 +10,7 @@ interface TaskCardProps {
   isRunning: boolean
   onPress: () => void
   showNewBadge?: boolean
+  isLast?: boolean
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
@@ -19,16 +20,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   isAvailable,
   isRunning,
   onPress,
-  showNewBadge = false
+  showNewBadge = false,
+  isLast = false
 }) => {
   const getCardStyle = () => {
-    if (!isAvailable) {
-      return [styles.card, styles.disabledCard]
-    }
-    if (isRunning) {
-      return [styles.card, styles.runningCard]
-    }
-    return styles.card
+    return [
+      styles.card,
+      isLast && styles.lastCard,
+      !isAvailable && styles.disabledCard,
+      isRunning && styles.runningCard,
+    ].filter(Boolean)
   }
 
   const getTextStyle = () => {
@@ -91,6 +92,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  lastCard: {
+    marginBottom: 0,
   },
   disabledCard: {
     backgroundColor: colors.disabled,
