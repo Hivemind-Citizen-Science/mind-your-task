@@ -121,13 +121,17 @@ export const HomeScreen: React.FC = () => {
   }, [navigation])
 
   const handleSyncPress = useCallback(async () => {
-    try {
-      await forceSyncAll()
-      loadSyncStatus()
-      Alert.alert('Sync Complete', 'All data has been synced to the server.')
-    } catch (error) {
-      Alert.alert('Sync Failed', 'Unable to sync data. Please try again later.')
-    }
+    // TODO: Uncomment when backend is ready
+    // try {
+    //   await forceSyncAll()
+    //   loadSyncStatus()
+    //   Alert.alert('Sync Complete', 'All data has been synced to the server.')
+    // } catch (error) {
+    //   Alert.alert('Sync Failed', 'Unable to sync data. Please try again later.')
+    // }
+    
+    // Temporary: Show message that sync is disabled
+    Alert.alert('Sync Disabled', 'API sync is temporarily disabled during development.')
   }, [loadSyncStatus])
 
   // Load data when screen focuses

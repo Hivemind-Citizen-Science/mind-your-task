@@ -21,9 +21,10 @@ export const saveTrialAndQueue = (trial: Trial): void => {
   }
   
   // Attempt immediate sync (non-blocking)
-  syncTrialsToBackend().catch(err => {
-    console.log('Initial sync attempt failed, will retry:', err)
-  })
+  // TODO: Uncomment when backend is ready
+  // syncTrialsToBackend().catch(err => {
+  //   console.log('Initial sync attempt failed, will retry:', err)
+  // })
 }
 
 /**
@@ -100,24 +101,26 @@ export const syncTrialsToBackend = async (): Promise<void> => {
       }
       
       // Post session metadata first (if not already synced)
-      if (!session.completed) {
-        try {
-          await postSession({
-            session,
-            device_id: getDeviceId() || 'unknown-device',
-            study_id: session.study_id
-          })
-        } catch (error) {
-          console.log('Session metadata sync failed, continuing with trials:', error)
-        }
-      }
+      // TODO: Uncomment when backend is ready
+      // if (!session.completed) {
+      //   try {
+      //     await postSession({
+      //       session,
+      //       device_id: getDeviceId() || 'unknown-device',
+      //       study_id: session.study_id
+      //     })
+      //   } catch (error) {
+      //     console.log('Session metadata sync failed, continuing with trials:', error)
+      //   }
+      // }
       
       // Post trials for this session
-      await postTrials({
-        trials,
-        session_id: sessionId,
-        device_id: getDeviceId() || 'unknown-device'
-      })
+      // TODO: Uncomment when backend is ready
+      // await postTrials({
+      //   trials,
+      //   session_id: sessionId,
+      //   device_id: getDeviceId() || 'unknown-device'
+      // })
       
       // Mark trials as synced
       trials.forEach(trial => {
@@ -193,11 +196,12 @@ const scheduleRetry = (): void => {
   
   console.log(`Scheduling retry in ${delay / 1000} seconds (attempt ${retryCount + 1})`)
   
-  retryTimeout = setTimeout(() => {
-    syncTrialsToBackend().catch(err => {
-      console.error('Retry sync failed:', err)
-    })
-  }, delay)
+  // TODO: Uncomment when backend is ready
+  // retryTimeout = setTimeout(() => {
+  //   syncTrialsToBackend().catch(err => {
+  //     console.error('Retry sync failed:', err)
+  //   })
+  // }, delay)
 }
 
 /**
@@ -222,7 +226,8 @@ export const forceSyncAll = async (): Promise<void> => {
   }
   
   // Attempt sync
-  await syncTrialsToBackend()
+  // TODO: Uncomment when backend is ready
+  // await syncTrialsToBackend()
 }
 
 /**
@@ -259,9 +264,10 @@ export const initializeSyncManager = (): void => {
   }
   
   // Attempt initial sync
-  syncTrialsToBackend().catch(err => {
-    console.log('Initial sync failed, will retry:', err)
-  })
+  // TODO: Uncomment when backend is ready
+  // syncTrialsToBackend().catch(err => {
+  //   console.log('Initial sync failed, will retry:', err)
+  // })
 }
 
 /**

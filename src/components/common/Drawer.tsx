@@ -452,6 +452,16 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                   onNavigate?.('SwipeInteraction')
                 }}
               />
+              
+              <ScreenNavigation
+                name="Session Completion Screen"
+                description="Session completion screen with stats, sync status, and return to home functionality"
+                screenName="SessionCompletion"
+                onNavigate={() => {
+                  onClose()
+                  onNavigate?.('SessionCompletion')
+                }}
+              />
             </CollapsibleSection>
           </ScrollView>
         </Animated.View>
