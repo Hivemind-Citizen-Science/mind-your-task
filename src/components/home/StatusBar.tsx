@@ -97,8 +97,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.surface,
-    padding: spacing.sm,
-    marginBottom: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.lg,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

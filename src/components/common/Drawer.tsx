@@ -8,12 +8,13 @@ import {
   Dimensions,
   Animated
 } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { PanGestureHandler, State, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler'
 import { colors, typography, spacing } from '../../theme'
 import { RootStackParamList } from '../../navigation/types'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
-const DRAWER_WIDTH = screenWidth * 0.8
+const DRAWER_WIDTH = screenWidth * 0.85
 const DRAWER_HEIGHT = screenHeight * 0.9
 
 interface DrawerProps {
@@ -111,6 +112,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
 export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, onNavigate }) => {
   const [translateX] = useState(new Animated.Value(DRAWER_WIDTH))
   const [gestureX] = useState(new Animated.Value(0))
+  const insets = useSafeAreaInsets()
   
   // State for tracking which sections are expanded
   const [expandedSections, setExpandedSections] = useState({
@@ -195,7 +197,8 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
       />
       
       {/* Drawer Content */}
-      <Animated.View style={[styles.drawer, animatedStyle]}>
+      <Animated.View style={[styles.drawer, { top: insets.top, height: DRAWER_HEIGHT - insets.top }, animatedStyle]}>
+        <SafeAreaView style={styles.safeArea} edges={['right']}>
           <View style={styles.drawerHeader}>
             <Text style={styles.drawerTitle}>Component Library</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -464,7 +467,8 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               />
             </CollapsibleSection>
           </ScrollView>
-        </Animated.View>
+        </SafeAreaView>
+      </Animated.View>
     </>
   )
 }
@@ -494,6 +498,9 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 20,
     zIndex: 1001,
+  },
+  safeArea: {
+    flex: 1,
   },
   drawerHeader: {
     flexDirection: 'row',
