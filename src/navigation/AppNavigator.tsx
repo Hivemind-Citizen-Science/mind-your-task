@@ -8,10 +8,16 @@ import { TaskScreen } from '../screens/TaskScreen'
 import { SessionCompletionScreen } from '../screens/SessionCompletionScreen'
 import { ComponentLibraryScreen } from '../screens/ComponentLibraryScreen'
 import { SwipeInteractionScreen } from '../screens/SwipeInteractionScreen'
+import { ResultsDisplayScreen, SessionWithTrials } from '../screens/ResultsDisplayScreen'
 import { GlobalDrawer } from '../components/common/GlobalDrawer'
 import { RootStackParamList } from './types'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
+
+// Wrapper component for ResultsDisplayScreen
+const ResultsDisplayScreenWrapper: React.FC = () => {
+  return <ResultsDisplayScreen />
+}
 
 export const AppNavigator: React.FC = () => {
   return (
@@ -62,6 +68,13 @@ export const AppNavigator: React.FC = () => {
           <Stack.Screen 
             name="SwipeInteraction" 
             component={SwipeInteractionScreen}
+          />
+          <Stack.Screen 
+            name="ResultsDisplay" 
+            component={ResultsDisplayScreenWrapper}
+            options={{
+              headerShown: false
+            }}
           />
         </Stack.Navigator>
       </GlobalDrawer>

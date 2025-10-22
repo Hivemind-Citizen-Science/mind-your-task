@@ -18,7 +18,7 @@ export const GlobalDrawer: React.FC<GlobalDrawerProps> = ({ children }) => {
   const navigation = useNavigation<GlobalDrawerNavigationProp>()
 
   const handleNavigate = (screenName: keyof RootStackParamList) => {
-    navigation.navigate(screenName)
+    navigation.navigate(screenName as any)
   }
 
   return (

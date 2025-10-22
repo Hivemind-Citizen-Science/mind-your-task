@@ -17,6 +17,7 @@ interface TrialFlowProps {
   currentTrial?: number
   totalTrials?: number
   stimulusComponent?: React.ComponentType<{ direction: string }>
+  renderStimulus?: (trial: TrialConfig) => React.ReactElement | null
 }
 
 export const TrialFlow: React.FC<TrialFlowProps> = ({
@@ -26,6 +27,7 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
   currentTrial,
   totalTrials,
   stimulusComponent: StimulusComponent,
+  renderStimulus,
 }) => {
   const [showFeedback, setShowFeedback] = useState(false)
   const [feedbackPosition, setFeedbackPosition] = useState({ x: 0, y: 0 })
@@ -93,7 +95,9 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
       case 'STIMULUS':
         return (
           <View style={styles.stimulusArea}>
-            {StimulusComponent ? (
+            {renderStimulus ? (
+              renderStimulus(trialData)
+            ) : StimulusComponent ? (
               <StimulusComponent direction={trialData.trial_parameters.direction} />
             ) : (
               <Text style={styles.stimulusText}>

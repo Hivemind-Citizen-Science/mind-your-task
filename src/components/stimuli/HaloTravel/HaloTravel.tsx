@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import { SwipeInteraction } from '../../SwipeInteraction/SwipeInteraction'
 import { SwipeResult } from '../../SwipeInteraction/types'
+import { TrialResult } from '../../../types'
 import { colors, typography, spacing } from '../../../theme'
 
 interface HaloTravelProps {
@@ -10,7 +11,7 @@ interface HaloTravelProps {
   travelSpeed: number
   distanceDifference: number
   haloColor: string
-  onComplete: (result: SwipeResult) => void
+  onComplete: (result: TrialResult) => void
 }
 
 export const HaloTravel: React.FC<HaloTravelProps> = ({
@@ -50,13 +51,17 @@ export const HaloTravel: React.FC<HaloTravelProps> = ({
   }, [])
 
   const handleSwipeComplete = (result: SwipeResult) => {
-    const isCorrect = result.choice === correctAnswer
+    // Map left/right to A/B for comparison
+    const mappedChoice = result.choice === 'left' ? 'A' : 'B'
+    const isCorrect = mappedChoice === correctAnswer
     onComplete({
-      ...result,
+      trial_id: `trial-${Date.now()}`,
+      user_response: mappedChoice,
       is_correct: isCorrect,
-      user_response: result.choice,
       response_time_ms: result.responseTimeMs,
-      trajectory_data: result.trajectoryData
+      trajectory_data: result.trajectoryData,
+      timestamp: Date.now(),
+      no_response: false
     })
   }
 

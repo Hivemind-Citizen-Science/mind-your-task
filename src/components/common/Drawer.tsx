@@ -11,7 +11,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { PanGestureHandler, State, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler'
 import { colors, typography, spacing } from '../../theme'
-import { RootStackParamList } from '../../navigation/types'
+import { RootStackParamList } from '../../types'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
 const DRAWER_WIDTH = screenWidth * 0.85
@@ -457,12 +457,12 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               />
               
               <ScreenNavigation
-                name="Session Completion Screen"
-                description="Session completion screen with stats, sync status, and return to home functionality"
-                screenName="SessionCompletion"
+                name="Results Display Screen"
+                description="Comprehensive session results display with collapsible sessions, detailed statistics, and trial breakdowns"
+                screenName="ResultsDisplay"
                 onNavigate={() => {
                   onClose()
-                  onNavigate?.('SessionCompletion')
+                  onNavigate?.('ResultsDisplay')
                 }}
               />
             </CollapsibleSection>

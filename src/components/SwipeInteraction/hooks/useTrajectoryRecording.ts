@@ -1,6 +1,6 @@
 import { useRef, useCallback } from 'react'
 import { SharedValue } from 'react-native-reanimated'
-import { TrajectoryPoint } from '../../types'
+import { TrajectoryPoint } from '../../../types'
 
 interface UseTrajectoryRecordingProps {
   isActive: boolean

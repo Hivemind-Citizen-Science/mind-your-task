@@ -4,26 +4,17 @@ import { SessionStats, SyncStatus } from '../components/SessionCompletionView'
 // Dummy session data
 export const createDummySession = (): Session => ({
   session_id: 'dummy-session-123',
-  user_id: 'dummy-user',
+  study_id: 'dummy-study',
+  device_id: 'dummy-device',
   task_type: 'dot_kinematogram',
+  period_type: 'morning',
+  session_date: new Date().toISOString().split('T')[0],
   started_at: Date.now() - 300000, // 5 minutes ago
   completed_at: Date.now(),
-  status: 'completed',
-  total_trials: 20,
-  completed_trials: 20,
-  correct_trials: 16,
-  accuracy: 80,
-  avg_response_time: 1200,
-  device_info: {
-    platform: 'iOS',
-    version: '17.0',
-    model: 'iPhone 15 Pro'
-  },
-  study_config: {
-    study_id: 'dummy-study',
-    version: '1.0.0',
-    created_at: Date.now() - 86400000
-  }
+  completed: true,
+  is_practice: false,
+  is_post_study: false,
+  trial_ids: []
 })
 
 // Dummy trials data
@@ -33,9 +24,8 @@ export const createDummyTrials = (sessionId: string): Trial[] => {
     trials.push({
       trial_id: `dummy-trial-${i + 1}`,
       session_id: sessionId,
-      user_id: 'dummy-user',
-      trial_index: i,
       task_type: 'dot_kinematogram',
+      trial_number: i + 1,
       trial_parameters: {
         coherence: 0.5,
         direction: i % 2 === 0 ? 'left' : 'right',

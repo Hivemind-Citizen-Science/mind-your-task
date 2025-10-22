@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { View, StyleSheet, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../navigation/types'
 import { colors } from '../theme'
 import { TrialFlow } from '../components/TrialFlow/TrialFlow'
 import { CalibrationStimulus } from '../components/stimuli/CalibrationStimulus'
 import { DotKinematogram } from '../components/stimuli/DotKinematogram/DotKinematogram'
 import { HaloTravel } from '../components/stimuli/HaloTravel/HaloTravel'
-import { TrialConfig, TrialResult, Session } from '../types'
+import { TrialConfig, TrialResult, Session, Trial } from '../types'
 import { getStudyConfig } from '../utils/storage'
 import { createSession, saveSessionData, completeSession } from '../utils/sessionManager'
 import { saveTrialAndQueue } from '../utils/trialSyncManager'
@@ -19,8 +21,10 @@ type TaskScreenRouteProp = RouteProp<{
   }
 }, 'params'>
 
+type TaskScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>
+
 export const TaskScreen: React.FC = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation<TaskScreenNavigationProp>()
   const route = useRoute<TaskScreenRouteProp>()
   const { taskType } = route.params
   
@@ -77,11 +81,20 @@ export const TaskScreen: React.FC = () => {
 
     try {
       // Create trial object
-      const trial = {
-        ...result,
+      const trial: Trial = {
+        trial_id: result.trial_id,
         session_id: session.session_id,
         task_type: taskType,
         trial_number: currentTrialIndex + 1,
+        trial_parameters: {},
+        user_response: result.user_response,
+        correct_answer: result.user_response, // For now, assume user response is correct
+        is_correct: result.is_correct,
+        response_time_ms: result.response_time_ms,
+        trajectory_data: result.trajectory_data,
+        feedback_shown: result.is_correct ? 'green' : 'red',
+        no_response: result.no_response,
+        timestamp: result.timestamp,
         synced: false
       }
 
@@ -227,7 +240,6 @@ export const TaskScreen: React.FC = () => {
         showCounter={true}
         currentTrial={currentTrialIndex + 1}
         totalTrials={trials.length}
-        onBackPress={handleBackPress}
       />
     </SafeAreaView>
   )

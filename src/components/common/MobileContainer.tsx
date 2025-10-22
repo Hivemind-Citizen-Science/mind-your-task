@@ -44,8 +44,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: '100vh',
-    minWidth: '100vw',
   },
   mobileContainer: {
     backgroundColor: colors.background,

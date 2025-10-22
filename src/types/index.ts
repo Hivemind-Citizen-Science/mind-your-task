@@ -143,6 +143,9 @@ export type RootStackParamList = {
   TaskInstructions: { taskType: string }
   Practice: { taskType: string }
   SecretSettings: undefined
+  ComponentLibrary: undefined
+  SwipeInteraction: undefined
+  ResultsDisplay: undefined
 }
 
 // ==================== SWIPE INTERACTION ====================

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import { SwipeInteraction } from '../SwipeInteraction/SwipeInteraction'
 import { SwipeResult } from '../SwipeInteraction/types'
+import { TrialResult } from '../../types'
 import { colors, typography, spacing } from '../../theme'
 
 interface CalibrationStimulusProps {
   direction: 'left' | 'right'
-  onComplete: (result: SwipeResult) => void
+  onComplete: (result: TrialResult) => void
 }
 
 export const CalibrationStimulus: React.FC<CalibrationStimulusProps> = ({
@@ -18,11 +19,13 @@ export const CalibrationStimulus: React.FC<CalibrationStimulusProps> = ({
   const handleSwipeComplete = (result: SwipeResult) => {
     const isCorrect = result.choice === direction
     onComplete({
-      ...result,
-      is_correct: isCorrect,
+      trial_id: `trial-${Date.now()}`,
       user_response: result.choice,
+      is_correct: isCorrect,
       response_time_ms: result.responseTimeMs,
-      trajectory_data: result.trajectoryData
+      trajectory_data: result.trajectoryData,
+      timestamp: Date.now(),
+      no_response: false
     })
   }
 

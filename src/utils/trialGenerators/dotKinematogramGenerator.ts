@@ -29,7 +29,7 @@ export const generateDotKinematogramTrials = (
   let trialNumber = 1
   
   // Generate trials for each coherence level
-  coherenceLevels.forEach((coherence, coherenceIndex) => {
+  coherenceLevels.forEach((coherence: number, coherenceIndex: number) => {
     const trialsForThisCoherence = trialsPerCoherence + (coherenceIndex < remainingTrials ? 1 : 0)
     
     for (let i = 0; i < trialsForThisCoherence; i++) {
@@ -78,7 +78,7 @@ export const generateDotKinematogramTrialsBalanced = (
   let trialNumber = 1
   
   // Generate trials for each coherence level
-  coherenceLevels.forEach((coherence, coherenceIndex) => {
+  coherenceLevels.forEach((coherence: number, coherenceIndex: number) => {
     const trialsForThisCoherence = trialsPerCoherence + (coherenceIndex < remainingTrials ? 1 : 0)
     const leftTrials = Math.ceil(trialsForThisCoherence / 2)
     const rightTrials = trialsForThisCoherence - leftTrials

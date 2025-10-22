@@ -11,6 +11,7 @@ import { CalibrationScreen } from '../../screens/CalibrationScreen'
 import { HomeScreen } from '../../screens/HomeScreen'
 import { ComponentLibraryScreen } from '../../screens/ComponentLibraryScreen'
 import { SwipeInteractionScreen } from '../../screens/SwipeInteractionScreen'
+import { ResultsDisplayScreen, SessionWithTrials } from '../../screens/ResultsDisplayScreen'
 import { Session, Trial } from '../../types'
 
 const Stack = createNativeStackNavigator()
@@ -18,26 +19,17 @@ const Stack = createNativeStackNavigator()
 // Mock data generators
 const generateMockSession = (): Session => ({
   session_id: 'mock-session-123',
-  user_id: 'mock-user',
+  study_id: 'mock-study',
+  device_id: 'mock-device',
   task_type: 'dot_kinematogram',
+  period_type: 'morning',
+  session_date: new Date().toISOString().split('T')[0],
   started_at: Date.now() - 300000, // 5 minutes ago
   completed_at: Date.now(),
-  status: 'completed',
-  total_trials: 20,
-  completed_trials: 20,
-  correct_trials: 16,
-  accuracy: 80,
-  avg_response_time: 1200,
-  device_info: {
-    platform: 'iOS',
-    version: '17.0',
-    model: 'iPhone 15 Pro'
-  },
-  study_config: {
-    study_id: 'mock-study',
-    version: '1.0.0',
-    created_at: Date.now() - 86400000
-  }
+  completed: true,
+  is_practice: false,
+  is_post_study: false,
+  trial_ids: []
 })
 
 const generateMockTrials = (sessionId: string): Trial[] => {
@@ -46,9 +38,8 @@ const generateMockTrials = (sessionId: string): Trial[] => {
     trials.push({
       trial_id: `trial-${i + 1}`,
       session_id: sessionId,
-      user_id: 'mock-user',
-      trial_index: i,
-      trial_type: 'dot_kinematogram',
+      task_type: 'dot_kinematogram',
+      trial_number: i + 1,
       trial_parameters: {
         coherence: 0.5,
         direction: Math.random() > 0.5 ? 'left' : 'right',
@@ -58,12 +49,14 @@ const generateMockTrials = (sessionId: string): Trial[] => {
         stimulus_duration: 2000
       },
       user_response: Math.random() > 0.5 ? 'left' : 'right',
+      correct_answer: Math.random() > 0.5 ? 'left' : 'right',
       is_correct: Math.random() > 0.2, // 80% accuracy
       response_time_ms: Math.floor(Math.random() * 2000) + 500,
       trajectory_data: [],
+      feedback_shown: Math.random() > 0.2 ? 'green' : 'red',
+      no_response: false,
       timestamp: Date.now() - (20 - i) * 10000,
-      synced: true,
-      no_response: false
+      synced: true
     })
   }
   return trials
@@ -273,6 +266,27 @@ export const SwipeInteractionScreenShowcase: React.FC = () => {
               <Stack.Screen 
                 name="SwipeInteraction" 
                 component={SwipeInteractionScreen}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
+      </View>
+    </View>
+  )
+}
+
+
+export const ResultsDisplayScreenShowcase: React.FC = () => {
+  return (
+    <View style={styles.showcaseContainer}>
+      <Text style={styles.showcaseLabel}>Results Display Screen</Text>
+      <View style={styles.screenWrapper}>
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen 
+                name="ResultsDisplay" 
+                component={ResultsDisplayScreen}
               />
             </Stack.Navigator>
           </NavigationContainer>
