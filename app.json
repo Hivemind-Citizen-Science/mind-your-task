@@ -11,7 +11,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#4A90E2"
     },
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "web": {
       "bundler": "metro",
       "favicon": "./assets/favicon.png"
@@ -33,7 +37,11 @@
     "plugins": [],
     "extra": {
       "apiUrl": "process.env.EXPO_PUBLIC_API_URL",
-      "researcherPasscode": "process.env.EXPO_PUBLIC_RESEARCHER_PASSCODE"
-    }
+      "researcherPasscode": "process.env.EXPO_PUBLIC_RESEARCHER_PASSCODE",
+      "eas": {
+        "projectId": "36e495f9-64d5-4dca-9a2d-4017b98cf6e1"
+      }
+    },
+    "owner": "cervere"
   }
 }
