@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { View, StyleSheet, Alert } from 'react-native'
+import { View, StyleSheet, Alert, Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -166,12 +166,15 @@ export const TaskScreen: React.FC = () => {
         )
       
       case 'dot_kinematogram':
+        const { width: screenWidth } = Dimensions.get('window')
+        const dynamicApertureSize = screenWidth * 0.5 // Half screen width
+        console.log('TaskScreen: Overriding aperture size to:', dynamicApertureSize)
         return (
           <DotKinematogram
             coherence={trial.trial_parameters.coherence}
             direction={trial.trial_parameters.direction}
             apertureShape={trial.trial_parameters.aperture_shape}
-            apertureSize={trial.trial_parameters.aperture_size}
+            apertureSize={dynamicApertureSize}
             dotCount={trial.trial_parameters.dot_count}
             duration={trial.trial_parameters.stimulus_duration}
           />

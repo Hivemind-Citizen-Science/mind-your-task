@@ -12,4 +12,5 @@ export type RootStackParamList = {
   ComponentLibrary: undefined
   SwipeInteraction: undefined
   ResultsDisplay: undefined
+  DotMotion: undefined
 }

@@ -1,5 +1,6 @@
 import { TrialConfig, TaskConfig } from '../../types'
 import { generateTrialId } from '../uuid'
+import { Dimensions } from 'react-native'
 
 // Fisher-Yates shuffle algorithm
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -18,7 +19,8 @@ export const generateDotKinematogramTrials = (
   const trialsPerBlock = taskConfig.trials_per_block || 20
   const coherenceLevels = taskConfig.parameters?.coherence_levels || [10, 20, 40, 60]
   const apertureShape = taskConfig.parameters?.aperture_shape || 'square'
-  const apertureSize = taskConfig.parameters?.aperture_size || 70
+  const { width: screenWidth } = Dimensions.get('window')
+  const apertureSize = taskConfig.parameters?.aperture_size || screenWidth * 0.5
   const dotCount = taskConfig.parameters?.dot_count || 3
   const stimulusDuration = taskConfig.parameters?.stimulus_duration || 800
   
@@ -67,7 +69,8 @@ export const generateDotKinematogramTrialsBalanced = (
   const trialsPerBlock = taskConfig.trials_per_block || 20
   const coherenceLevels = taskConfig.parameters?.coherence_levels || [10, 20, 40, 60]
   const apertureShape = taskConfig.parameters?.aperture_shape || 'square'
-  const apertureSize = taskConfig.parameters?.aperture_size || 70
+  const { width: screenWidth } = Dimensions.get('window')
+  const apertureSize = taskConfig.parameters?.aperture_size || screenWidth * 0.5
   const dotCount = taskConfig.parameters?.dot_count || 3
   const stimulusDuration = taskConfig.parameters?.stimulus_duration || 800
   

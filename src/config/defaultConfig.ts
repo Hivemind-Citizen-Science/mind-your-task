@@ -42,7 +42,7 @@ export const DEFAULT_CONFIG: StudyConfig = {
       parameters: {
         coherence_levels: [10, 20, 40, 60],
         aperture_shape: 'square',
-        aperture_size: 70,
+        aperture_size: 120,
         dot_count: 3,
         stimulus_duration: 800,
       },

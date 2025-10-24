@@ -53,7 +53,7 @@ export const SwipeInteraction: React.FC<SwipeInteractionProps> = ({
   // Calculate positions according to spec with responsive layout
   const screenWidth = baseScreenWidth - (insets.left + insets.right)
   const screenHeight = baseScreenHeight - (insets.top + insets.bottom)
-  const startZoneY = screenHeight - (screenHeight * 0.1) // 10% from bottom edge within safe area
+  const startZoneY = screenHeight - (screenHeight * 0.15) // 10% from bottom edge within safe area
   const startZoneX = screenWidth / 2
   // Move response zones closer to edges (justified alignment)
   const edgeMargin = screenWidth * 0.05 // 5% from edges instead of fixed 60px

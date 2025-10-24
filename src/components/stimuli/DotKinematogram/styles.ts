@@ -11,8 +11,8 @@ export const styles = StyleSheet.create({
   aperture: {
     position: 'relative',
     overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: colors.border,
+    borderWidth: 4,
+    borderColor: colors.primary,
   },
   dot: {
     position: 'absolute',

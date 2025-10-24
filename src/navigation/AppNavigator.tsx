@@ -9,6 +9,7 @@ import { SessionCompletionScreen } from '../screens/SessionCompletionScreen'
 import { ComponentLibraryScreen } from '../screens/ComponentLibraryScreen'
 import { SwipeInteractionScreen } from '../screens/SwipeInteractionScreen'
 import { ResultsDisplayScreen, SessionWithTrials } from '../screens/ResultsDisplayScreen'
+import { DotMotionScreen } from '../screens/DotMotionScreen'
 import { GlobalDrawer } from '../components/common/GlobalDrawer'
 import { RootStackParamList } from './types'
 
@@ -72,6 +73,13 @@ export const AppNavigator: React.FC = () => {
           <Stack.Screen 
             name="ResultsDisplay" 
             component={ResultsDisplayScreenWrapper}
+            options={{
+              headerShown: false
+            }}
+          />
+          <Stack.Screen 
+            name="DotMotion" 
+            component={DotMotionScreen}
             options={{
               headerShown: false
             }}

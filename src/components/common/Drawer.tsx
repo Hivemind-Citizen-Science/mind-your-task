@@ -119,6 +119,7 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
     commonComponents: true,
     trialFlowComponents: true,
     swipeInteractionComponents: true,
+    stimulusComponents: true,
     errorHandling: true,
     screenNavigation: true,
   })
@@ -362,6 +363,23 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
               />
             </CollapsibleSection>
 
+            {/* Stimulus Components */}
+            <CollapsibleSection
+              title="StimulusComponents"
+              isExpanded={expandedSections.stimulusComponents}
+              onToggle={() => toggleSection('stimulusComponents')}
+            >
+              <ScreenNavigation
+                name="Random Dot Motion Task"
+                description="Interactive demonstration of the Random Dot Motion Task stimulus with configurable parameters"
+                screenName={"DotMotion" as keyof RootStackParamList}
+                onNavigate={() => {
+                  onClose()
+                  onNavigate?.('DotMotion' as keyof RootStackParamList)
+                }}
+              />
+            </CollapsibleSection>
+
             {/* Error Boundary */}
             <CollapsibleSection
               title="Error Handling"
@@ -416,15 +434,6 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                 }}
               />
               
-              <ScreenNavigation
-                name="Task Screen"
-                description="Main task execution screen for calibration, dot kinematogram, and halo travel tasks"
-                screenName="Task"
-                onNavigate={() => {
-                  onClose()
-                  onNavigate?.('Task')
-                }}
-              />
               
               <ScreenNavigation
                 name="Session Completion Screen"
