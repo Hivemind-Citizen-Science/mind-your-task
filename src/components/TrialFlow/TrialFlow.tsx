@@ -17,7 +17,7 @@ interface TrialFlowProps {
   currentTrial?: number
   totalTrials?: number
   stimulusComponent?: React.ComponentType<{ direction: string }>
-  renderStimulus?: (trial: TrialConfig) => React.ReactElement | null
+  renderStimulus?: (trial: TrialConfig, onStimulusComplete: () => void) => React.ReactElement | null
 }
 
 export const TrialFlow: React.FC<TrialFlowProps> = ({
@@ -37,11 +37,14 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
     trialResult,
     isActive,
     startTrial,
+    handleStimulusComplete,
     handleSwipeComplete,
     resetTrial,
   } = useTrialStateMachine({
     trialData,
     onTrialComplete,
+    stimulusDurationMs: trialData.trial_parameters?.stimulus_duration,
+    disableStimulusTimeout: trialData.task_type === 'halo_travel',
   })
 
   // Reset trial when trialData changes (new trial)
@@ -96,7 +99,7 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
         return (
           <View style={styles.stimulusArea}>
             {renderStimulus ? (
-              renderStimulus(trialData)
+              renderStimulus(trialData, handleStimulusComplete)
             ) : StimulusComponent ? (
               <StimulusComponent direction={trialData.trial_parameters.direction} />
             ) : (

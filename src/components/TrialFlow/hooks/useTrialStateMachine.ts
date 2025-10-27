@@ -19,6 +19,8 @@ interface TrialStateMachineProps {
   fixationDurationMs?: number
   restPeriodMs?: number
   feedbackDurationMs?: number
+  stimulusDurationMs?: number
+  disableStimulusTimeout?: boolean
 }
 
 export const useTrialStateMachine = ({
@@ -29,6 +31,8 @@ export const useTrialStateMachine = ({
   fixationDurationMs = 300,
   restPeriodMs = 300,
   feedbackDurationMs = 300,
+  stimulusDurationMs,
+  disableStimulusTimeout = false,
 }: TrialStateMachineProps) => {
   const [currentState, setCurrentState] = useState<TrialState>('IDLE')
   const [trialResult, setTrialResult] = useState<Partial<TrialResult> | null>(null)
@@ -61,40 +65,83 @@ export const useTrialStateMachine = ({
       timeoutRef.current = setTimeout(() => {
         setCurrentState('STIMULUS')
         
-        timeoutRef.current = setTimeout(() => {
-          setCurrentState('RESPONSE')
-          responseStartTimeRef.current = Date.now()
+        // Only set stimulus timeout if not disabled
+        if (!disableStimulusTimeout) {
+          // Use stimulus duration from trial parameters or fallback to default
+          const stimulusDuration = stimulusDurationMs || trialData.trial_parameters?.stimulus_duration || 800
           
-          // Set timeout for response
           timeoutRef.current = setTimeout(() => {
-            // Timeout occurred
-            const responseTime = Date.now() - responseStartTimeRef.current
-            const result: TrialResult = {
-              trial_id: trialData.trial_id,
-              user_response: 'timeout',
-              is_correct: false,
-              response_time_ms: responseTime,
-              trajectory_data: [],
-              timestamp: Date.now(),
-              no_response: true,
-            }
-            setTrialResult(result)
-            setCurrentState('FEEDBACK')
+            setCurrentState('RESPONSE')
+            responseStartTimeRef.current = Date.now()
             
+            // Set timeout for response
             timeoutRef.current = setTimeout(() => {
-              setCurrentState('REST')
+              // Timeout occurred
+              const responseTime = Date.now() - responseStartTimeRef.current
+              const result: TrialResult = {
+                trial_id: trialData.trial_id,
+                user_response: 'timeout',
+                is_correct: false,
+                response_time_ms: responseTime,
+                trajectory_data: [],
+                timestamp: Date.now(),
+                no_response: true,
+              }
+              setTrialResult(result)
+              setCurrentState('FEEDBACK')
               
               timeoutRef.current = setTimeout(() => {
-                setCurrentState('COMPLETE')
-                setIsActive(false)
-                onTrialComplete(result)
-              }, restPeriodMs)
-            }, feedbackDurationMs)
-          }, timeoutSeconds * 1000)
-        }, 800) // Stimulus duration
+                setCurrentState('REST')
+                
+                timeoutRef.current = setTimeout(() => {
+                  setCurrentState('COMPLETE')
+                  setIsActive(false)
+                  onTrialComplete(result)
+                }, restPeriodMs)
+              }, feedbackDurationMs)
+            }, timeoutSeconds * 1000)
+          }, stimulusDuration)
+        }
+        // If disableStimulusTimeout is true, the stimulus will control its own completion
+        // via the handleStimulusComplete callback
       }, fixationDurationMs)
     }, delay)
-  }, [isActive, delayRangeMs, fixationDurationMs, restPeriodMs, feedbackDurationMs, timeoutSeconds, trialData.trial_id, onTrialComplete])
+  }, [isActive, delayRangeMs, fixationDurationMs, restPeriodMs, feedbackDurationMs, timeoutSeconds, stimulusDurationMs, trialData.trial_id, trialData.trial_parameters?.stimulus_duration, onTrialComplete])
+
+  const handleStimulusComplete = useCallback(() => {
+    if (currentState !== 'STIMULUS') return
+    
+    clearTimeouts()
+    setCurrentState('RESPONSE')
+    responseStartTimeRef.current = Date.now()
+    
+    // Set timeout for response
+    timeoutRef.current = setTimeout(() => {
+      // Timeout occurred
+      const responseTime = Date.now() - responseStartTimeRef.current
+      const result: TrialResult = {
+        trial_id: trialData.trial_id,
+        user_response: 'timeout',
+        is_correct: false,
+        response_time_ms: responseTime,
+        trajectory_data: [],
+        timestamp: Date.now(),
+        no_response: true,
+      }
+      setTrialResult(result)
+      setCurrentState('FEEDBACK')
+      
+      timeoutRef.current = setTimeout(() => {
+        setCurrentState('REST')
+        
+        timeoutRef.current = setTimeout(() => {
+          setCurrentState('COMPLETE')
+          setIsActive(false)
+          onTrialComplete(result)
+        }, restPeriodMs)
+      }, feedbackDurationMs)
+    }, timeoutSeconds * 1000)
+  }, [currentState, trialData.trial_id, clearTimeouts, timeoutSeconds, restPeriodMs, feedbackDurationMs, onTrialComplete])
 
   const handleSwipeComplete = useCallback((choice: 'left' | 'right', trajectoryData: any[], responseTimeMs: number) => {
     if (currentState !== 'RESPONSE') return
@@ -145,6 +192,7 @@ export const useTrialStateMachine = ({
     trialResult,
     isActive,
     startTrial,
+    handleStimulusComplete,
     handleSwipeComplete,
     resetTrial,
   }

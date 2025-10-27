@@ -11,7 +11,8 @@ export const HaloTravel: React.FC<HaloTravelProps> = ({
   travelSpeed,
   distanceDifference,
   haloColor,
-  duration
+  duration,
+  onStimulusComplete
 }) => {
   const [isActive, setIsActive] = useState(false)
 
@@ -19,15 +20,9 @@ export const HaloTravel: React.FC<HaloTravelProps> = ({
     // Start animation immediately when component mounts
     setIsActive(true)
 
-    // Stop animation after duration
-    const stopTimer = setTimeout(() => {
-      setIsActive(false)
-    }, duration)
-
-    return () => {
-      clearTimeout(stopTimer)
-    }
-  }, [duration])
+    // Animation will be controlled by the useHaloAnimation hook
+    // No need for fixed timeout since completion is handled by phase transitions
+  }, [])
 
   // Get animated halos
   const { phase, haloA, haloB } = useHaloAnimation({
@@ -39,54 +34,41 @@ export const HaloTravel: React.FC<HaloTravelProps> = ({
     isActive
   })
 
+  // Call onStimulusComplete when both halos have finished traveling
+  useEffect(() => {
+    if (phase === 'complete' && onStimulusComplete) {
+      onStimulusComplete()
+    }
+  }, [phase, onStimulusComplete])
+
   const deviceHeight = Dimensions.get('window').height
+  const topMargin = deviceHeight * 0.05 + 60 // Below trial counter + some extra space
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: topMargin }]}>
       <Text style={styles.instruction}>
         Watch the halos travel, then choose which traveled farther
       </Text>
       
       <View style={styles.haloContainer}>
-        {phase === 'A' && (
-          <Halo
-            x={haloA.x}
-            y={haloA.y}
-            size={haloA.size}
-            color={haloColor}
-            label={haloA.label}
-            phase={haloA.phase as 'A' | 'B' | 'complete'}
-          />
-        )}
+        <Halo
+          x={haloA.x}
+          y={haloA.y}
+          size={haloA.size}
+          color={haloColor}
+          label={haloA.label}
+          phase={haloA.phase as 'A' | 'B' | 'complete'}
+        />
         
-        {phase === 'B' && (
-          <Halo
-            x={haloB.x}
-            y={haloB.y}
-            size={haloB.size}
-            color={haloColor}
-            label={haloB.label}
-            phase={haloB.phase as 'A' | 'B' | 'complete'}
-          />
-        )}
+        <Halo
+          x={haloB.x}
+          y={haloB.y}
+          size={haloB.size}
+          color={haloColor}
+          label={haloB.label}
+          phase={haloB.phase as 'A' | 'B' | 'complete'}
+        />
       </View>
-      
-      <Text style={styles.phaseText}>
-        Phase: {phase}
-      </Text>
-      {phase === 'A' && (
-        <Text style={styles.phaseText}>
-          Halo A: x={Math.round(haloA.x)}, y={Math.round(haloA.y)}
-        </Text>
-      )}
-      {phase === 'B' && (
-        <Text style={styles.phaseText}>
-          Halo B: x={Math.round(haloB.x)}, y={Math.round(haloB.y)}
-        </Text>
-      )}
-      <Text style={styles.phaseText}>
-        Duration: {duration}ms
-      </Text>
     </View>
   )
 }

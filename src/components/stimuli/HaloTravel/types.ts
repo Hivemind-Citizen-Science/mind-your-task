@@ -5,6 +5,7 @@ export interface HaloTravelProps {
   distanceDifference: number
   haloColor: string
   duration: number
+  onStimulusComplete?: () => void
 }
 
 export interface HaloProps {

@@ -143,7 +143,7 @@ export const TaskScreen: React.FC = () => {
   }, [session, currentTrialIndex, trials, taskType, navigation])
 
   // Render stimulus based on task type
-  const renderStimulus = useCallback((trial: TrialConfig) => {
+  const renderStimulus = useCallback((trial: TrialConfig, onStimulusComplete: () => void) => {
     const commonProps = {
       onComplete: () => handleTrialComplete({
         trial_id: trial.trial_id,
@@ -189,6 +189,7 @@ export const TaskScreen: React.FC = () => {
             distanceDifference={trial.trial_parameters.distance_difference}
             haloColor={trial.trial_parameters.halo_color}
             duration={trial.trial_parameters.stimulus_duration}
+            onStimulusComplete={onStimulusComplete}
           />
         )
       
