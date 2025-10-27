@@ -55,6 +55,7 @@ export const DEFAULT_CONFIG: StudyConfig = {
         travel_speed: 200,
         distance_difference: 50,
         halo_color: '#B0BEC5',
+        stimulus_duration: 3000,
       },
     },
   },

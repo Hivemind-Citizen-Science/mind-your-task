@@ -188,7 +188,7 @@ export const TaskScreen: React.FC = () => {
             travelSpeed={trial.trial_parameters.travel_speed}
             distanceDifference={trial.trial_parameters.distance_difference}
             haloColor={trial.trial_parameters.halo_color}
-            onComplete={commonProps.onComplete}
+            duration={trial.trial_parameters.stimulus_duration}
           />
         )
       

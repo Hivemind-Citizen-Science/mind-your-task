@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+import { Dimensions, View } from 'react-native'
 import { DotKinematogramProps } from './types'
 import { Aperture } from './components/Aperture'
 import { Dot } from './components/Dot'
 import { useDotAnimation } from './hooks/useDotAnimation'
 import { styles } from './styles'
+import { colors, spacing } from '@/theme'
 
 export const DotKinematogram: React.FC<DotKinematogramProps> = ({
   coherence,
@@ -39,9 +40,14 @@ export const DotKinematogram: React.FC<DotKinematogramProps> = ({
     duration,
     isActive
   })
-
+  const deviceHeight = Dimensions.get('window').height
   return (
-    <View style={styles.container}>
+    <View style={ {flex: 1,
+      backgroundColor: colors.stimulusBackground,
+      // justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: deviceHeight/8
+      }}>
       <Aperture size={apertureSize} shape={apertureShape}>
         {dots.map((dot) => (
           <Dot
