@@ -2,13 +2,12 @@ import { TrajectoryPoint } from '../../types'
 
 export interface SwipeInteractionProps {
   onSwipeComplete: (result: SwipeResult) => void
-  leftLabel: string
-  rightLabel: string
+  choiceLabels: [string, string]  // [leftChoice, rightChoice]
   disabled?: boolean
 }
 
 export interface SwipeResult {
-  choice: 'left' | 'right'
+  choice: 'left' | 'right' | 'A' | 'B'
   trajectoryData: TrajectoryPoint[]
   responseTimeMs: number
 }

@@ -8,7 +8,8 @@ import {
   getCurrentStudyId, 
   setCurrentStudyId, 
   getAppState, 
-  setAppState 
+  setAppState,
+  clearAll
 } from './storage'
 
 export const initializeApp = async (): Promise<void> => {
@@ -56,4 +57,21 @@ export const checkInitialization = (): boolean => {
   const appState = getAppState()
   
   return !!(deviceId && studyConfig && appState)
+}
+
+export const resetApp = async (): Promise<void> => {
+  try {
+    console.log('Resetting app data...')
+    
+    // Clear all storage
+    clearAll()
+    console.log('All storage cleared')
+    
+    // Re-initialize with default config
+    await initializeApp()
+    console.log('App reset complete - reinitialized with default config')
+  } catch (error) {
+    console.error('Failed to reset app:', error)
+    throw error
+  }
 }

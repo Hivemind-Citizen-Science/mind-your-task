@@ -18,7 +18,6 @@ export const ChoiceZone: React.FC<ChoiceZoneProps> = ({
   isHovered,
   onPress 
 }) => {
-  console.log('ChoiceZone render:', { x, y, size, label, isActive })
   
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: isActive ? 1.05 : 1 }],

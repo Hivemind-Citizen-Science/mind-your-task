@@ -32,6 +32,7 @@ export const TaskScreen: React.FC = () => {
   const [currentTrialIndex, setCurrentTrialIndex] = useState(0)
   const [session, setSession] = useState<Session | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [choiceLabels, setChoiceLabels] = useState<[string, string]>(['Left', 'Right'])
 
   // Initialize task
   useEffect(() => {
@@ -50,6 +51,10 @@ export const TaskScreen: React.FC = () => {
           navigation.goBack()
           return
         }
+
+        // Set choice labels from task configuration
+        const labels = taskConfig.parameters?.choice_labels || ['Left', 'Right']
+        setChoiceLabels(labels as [string, string])
 
         // Generate trials
         const generatedTrials = generateTrialsForTask(taskType, taskConfig)
@@ -233,7 +238,6 @@ export const TaskScreen: React.FC = () => {
   }
 
   const currentTrial = trials[currentTrialIndex]
-
   return (
     <SafeAreaView style={styles.container}>
       <TrialFlow
@@ -243,6 +247,7 @@ export const TaskScreen: React.FC = () => {
         showCounter={true}
         currentTrial={currentTrialIndex + 1}
         totalTrials={trials.length}
+        choiceLabels={choiceLabels}
       />
     </SafeAreaView>
   )

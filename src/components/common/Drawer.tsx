@@ -6,12 +6,14 @@ import {
   TouchableOpacity, 
   ScrollView, 
   Dimensions,
-  Animated
+  Animated,
+  Alert
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { PanGestureHandler, State, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler'
 import { colors, typography, spacing } from '../../theme'
 import { RootStackParamList } from '../../types'
+import { resetApp } from '../../utils/initializeApp'
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
 const DRAWER_WIDTH = screenWidth * 0.85
@@ -112,6 +114,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
 export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, onNavigate }) => {
   const [translateX] = useState(new Animated.Value(DRAWER_WIDTH))
   const [gestureX] = useState(new Animated.Value(0))
+  const [isResetting, setIsResetting] = useState(false)
   const insets = useSafeAreaInsets()
   
   // State for tracking which sections are expanded
@@ -122,6 +125,7 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
     stimulusComponents: true,
     errorHandling: true,
     screenNavigation: true,
+    appManagement: true,
   })
   
   const toggleSection = (sectionKey: keyof typeof expandedSections) => {
@@ -129,6 +133,53 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
       ...prev,
       [sectionKey]: !prev[sectionKey]
     }))
+  }
+
+  const handleResetApp = () => {
+    Alert.alert(
+      'Reset App Data',
+      'This will clear all app data and reset to initial configuration. This action cannot be undone.\n\nAre you sure you want to continue?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setIsResetting(true)
+              await resetApp()
+              
+              Alert.alert(
+                'Reset Complete',
+                'App data has been cleared and reset to initial configuration. Please close and reopen the app to see the changes.',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      onClose()
+                      // The reset is complete - the new config is saved
+                      // User needs to manually restart the app to see changes
+                    }
+                  }
+                ]
+              )
+            } catch (error) {
+              console.error('Failed to reset app:', error)
+              Alert.alert(
+                'Reset Failed',
+                'Failed to reset app data. Please try again.',
+                [{ text: 'OK' }]
+              )
+            } finally {
+              setIsResetting(false)
+            }
+          },
+        },
+      ]
+    )
   }
 
   React.useEffect(() => {
@@ -396,6 +447,31 @@ export const Drawer: React.FC<DrawerProps> = ({ isVisible, onClose, children, on
                   </View>
                 }
               />
+            </CollapsibleSection>
+
+            {/* App Management */}
+            <CollapsibleSection
+              title="App Management"
+              isExpanded={expandedSections.appManagement}
+              onToggle={() => toggleSection('appManagement')}
+            >
+              <View style={styles.showcaseItem}>
+                <View style={styles.showcaseHeader}>
+                  <Text style={styles.componentName}>Reset App Data</Text>
+                </View>
+                <Text style={styles.componentDescription}>
+                  Clear all local storage data and reload the initial configuration. This will reset the app as if it's being used for the first time.
+                </Text>
+                <TouchableOpacity 
+                  style={[styles.resetButton, isResetting && styles.resetButtonDisabled]}
+                  onPress={handleResetApp}
+                  disabled={isResetting}
+                >
+                  <Text style={styles.resetButtonText}>
+                    {isResetting ? 'Resetting...' : 'Reset App Data'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </CollapsibleSection>
 
             {/* Screen Navigation */}
@@ -912,5 +988,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#7AB8F5',
     borderRadius: 1,
     opacity: 0.7,
+  },
+  
+  // Reset button styles
+  resetButton: {
+    backgroundColor: colors.error,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: spacing.sm,
+    shadowColor: colors.error,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  resetButtonText: {
+    ...typography.caption,
+    color: colors.textPrimary,
+    fontWeight: '600',
+  },
+  resetButtonDisabled: {
+    backgroundColor: colors.textSecondary,
+    opacity: 0.6,
   },
 })

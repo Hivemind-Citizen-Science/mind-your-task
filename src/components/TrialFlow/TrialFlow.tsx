@@ -18,6 +18,7 @@ interface TrialFlowProps {
   totalTrials?: number
   stimulusComponent?: React.ComponentType<{ direction: string }>
   renderStimulus?: (trial: TrialConfig, onStimulusComplete: () => void) => React.ReactElement | null
+  choiceLabels?: [string, string]  // [leftChoice, rightChoice]
 }
 
 export const TrialFlow: React.FC<TrialFlowProps> = ({
@@ -28,6 +29,7 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
   totalTrials,
   stimulusComponent: StimulusComponent,
   renderStimulus,
+  choiceLabels = ['Left', 'Right'],
 }) => {
   const [showFeedback, setShowFeedback] = useState(false)
   const [feedbackPosition, setFeedbackPosition] = useState({ x: 0, y: 0 })
@@ -58,7 +60,9 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
     const rightChoiceX = screenWidth - 120 / 2 - 20
     const choiceY = 120 / 2 + 20
 
-    const position = result.choice === 'left' 
+    // Map choice to position (first choice is left, second choice is right)
+    const isLeftChoice = result.choice === choiceLabels[0]
+    const position = isLeftChoice
       ? { x: leftChoiceX, y: choiceY }
       : { x: rightChoiceX, y: choiceY }
 
@@ -114,8 +118,7 @@ export const TrialFlow: React.FC<TrialFlowProps> = ({
         return (
           <SwipeInteraction
             onSwipeComplete={handleSwipeResult}
-            leftLabel="LEFT"
-            rightLabel="RIGHT"
+            choiceLabels={choiceLabels}
           />
         )
 

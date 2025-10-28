@@ -12,7 +12,7 @@ export const generateTrialsForTask = (
 ): TrialConfig[] => {
   switch (taskType) {
     case 'calibration':
-      return generateCalibrationTrialsWithNumbers()
+      return generateCalibrationTrialsWithNumbers(taskConfig)
     
     case 'dot_kinematogram':
       return generateDotKinematogramTrialsBalanced(taskConfig)

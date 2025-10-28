@@ -1,4 +1,4 @@
-import { TrialConfig } from '../../types'
+import { TrialConfig, TaskConfig } from '../../types'
 import { generateTrialId } from '../uuid'
 
 // Fisher-Yates shuffle algorithm
@@ -11,7 +11,7 @@ const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled
 }
 
-export const generateCalibrationTrials = (): TrialConfig[] => {
+export const generateCalibrationTrials = (choiceLabels: [string, string] = ['Left', 'Right']): TrialConfig[] => {
   const trials: TrialConfig[] = []
   
   // Create 5 left and 5 right trials
@@ -20,15 +20,21 @@ export const generateCalibrationTrials = (): TrialConfig[] => {
       trial_id: generateTrialId(),
       trial_number: i * 2 + 1,
       task_type: 'calibration',
-      correct_answer: 'left',
-      trial_parameters: { direction: 'left' }
+      correct_answer: choiceLabels[0],
+      trial_parameters: { 
+        direction: 'left',
+        choice_labels: choiceLabels
+      }
     })
     trials.push({
       trial_id: generateTrialId(),
       trial_number: i * 2 + 2,
       task_type: 'calibration',
-      correct_answer: 'right',
-      trial_parameters: { direction: 'right' }
+      correct_answer: choiceLabels[1],
+      trial_parameters: { 
+        direction: 'right',
+        choice_labels: choiceLabels
+      }
     })
   }
   
@@ -36,8 +42,9 @@ export const generateCalibrationTrials = (): TrialConfig[] => {
   return shuffleArray(trials)
 }
 
-export const generateCalibrationTrialsWithNumbers = (): TrialConfig[] => {
-  const trials = generateCalibrationTrials()
+export const generateCalibrationTrialsWithNumbers = (taskConfig?: TaskConfig): TrialConfig[] => {
+  const choiceLabels = taskConfig?.parameters?.choice_labels || ['Left', 'Right']
+  const trials = generateCalibrationTrials(choiceLabels)
   
   // Reassign trial numbers after shuffling
   return trials.map((trial, index) => ({

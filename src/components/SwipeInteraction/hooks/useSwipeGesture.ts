@@ -11,6 +11,7 @@ interface UseSwipeGestureProps {
   screenWidth: number
   screenHeight: number
   onTrailStart?: () => void
+  choiceLabels: [string, string]  // [leftChoice, rightChoice]
 }
 
 export const useSwipeGesture = ({
@@ -20,6 +21,7 @@ export const useSwipeGesture = ({
   screenWidth,
   screenHeight,
   onTrailStart,
+  choiceLabels,
 }: UseSwipeGestureProps) => {
   const coinPosition = useSharedValue({ x: screenWidth / 2, y: startZoneY })
   const isActive = useSharedValue(false)
@@ -101,7 +103,7 @@ export const useSwipeGesture = ({
       // Check left zone
       if (coinX <= leftZoneX + choiceZoneSize / 2 && coinY <= topZoneY + choiceZoneSize / 2) {
         const result: SwipeResult = {
-          choice: 'left',
+          choice: choiceLabels[0] as 'left' | 'right' | 'A' | 'B',
           trajectoryData: trajectory.value,
           responseTimeMs: responseTime
         }
@@ -112,7 +114,7 @@ export const useSwipeGesture = ({
       // Check right zone
       if (coinX >= rightZoneX - choiceZoneSize / 2 && coinY <= topZoneY + choiceZoneSize / 2) {
         const result: SwipeResult = {
-          choice: 'right',
+          choice: choiceLabels[1] as 'left' | 'right' | 'A' | 'B',
           trajectoryData: trajectory.value,
           responseTimeMs: responseTime
         }

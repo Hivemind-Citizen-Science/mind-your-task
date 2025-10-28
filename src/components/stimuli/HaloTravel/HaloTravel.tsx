@@ -15,10 +15,13 @@ export const HaloTravel: React.FC<HaloTravelProps> = ({
   onStimulusComplete
 }) => {
   const [isActive, setIsActive] = useState(false)
+  const [trialKey, setTrialKey] = useState(Date.now())
 
   useEffect(() => {
     // Start animation immediately when component mounts
     setIsActive(true)
+    // Generate new trial key for randomization
+    setTrialKey(Date.now())
 
     // Animation will be controlled by the useHaloAnimation hook
     // No need for fixed timeout since completion is handled by phase transitions
@@ -31,7 +34,8 @@ export const HaloTravel: React.FC<HaloTravelProps> = ({
     travelSpeed,
     distanceDifference,
     duration,
-    isActive
+    isActive,
+    trialKey
   })
 
   // Call onStimulusComplete when both halos have finished traveling

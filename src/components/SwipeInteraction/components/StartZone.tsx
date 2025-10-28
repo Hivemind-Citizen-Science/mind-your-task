@@ -15,7 +15,6 @@ export const StartZone: React.FC<StartZoneProps> = ({
   isActive, 
   onPress 
 }) => {
-  console.log('StartZone render:', { x, y, size, isActive })
   
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: isActive ? 1.1 : 1 }],

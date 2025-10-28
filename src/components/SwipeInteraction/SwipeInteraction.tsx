@@ -42,10 +42,11 @@ const SCREEN_DIMENSIONS = {
 
 export const SwipeInteraction: React.FC<SwipeInteractionProps> = ({
   onSwipeComplete,
-  leftLabel,
-  rightLabel,
+  choiceLabels,
   disabled = false,
 }) => {
+  const [leftLabel, rightLabel] = choiceLabels
+  console.log('choiceLabels', choiceLabels)
   const insets = useSafeAreaInsets()
   const [isActive, setIsActive] = useState(false)
   const [trajectory, setTrajectory] = useState<Array<{ x: number; y: number; timestamp: number }>>([])
@@ -81,6 +82,7 @@ export const SwipeInteraction: React.FC<SwipeInteractionProps> = ({
     choiceZoneSize: SCREEN_DIMENSIONS.CHOICE_ZONE_SIZE,
     screenWidth,
     screenHeight,
+    choiceLabels,
   })
 
   // Handle gesture state changes
@@ -143,17 +145,6 @@ export const SwipeInteraction: React.FC<SwipeInteractionProps> = ({
       </SafeAreaView>
     )
   }
-
-  // Debug logging
-  console.log('SwipeInteraction render:', {
-    startZoneX,
-    startZoneY,
-    leftChoiceX,
-    rightChoiceX,
-    choiceY,
-    screenWidth,
-    screenHeight
-  })
 
   return (
     <SafeAreaView style={styles.container}>

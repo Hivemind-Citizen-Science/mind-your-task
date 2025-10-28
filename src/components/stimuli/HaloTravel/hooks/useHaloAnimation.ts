@@ -11,6 +11,7 @@ interface UseHaloAnimationProps {
   distanceDifference: number
   duration: number
   isActive: boolean
+  trialKey?: string | number  // Add trial key to force re-randomization
 }
 
 interface UseHaloAnimationReturn {
@@ -25,7 +26,8 @@ export const useHaloAnimation = ({
   travelSpeed,
   distanceDifference,
   duration,
-  isActive
+  isActive,
+  trialKey
 }: UseHaloAnimationProps): UseHaloAnimationReturn => {
   const [animationState, setAnimationState] = useState<HaloAnimationState>({
     phase: 'A',
@@ -52,9 +54,9 @@ export const useHaloAnimation = ({
     // Calculate disappearance points once for this trial
     // Both halos start from the same point and travel at the same speed
     // They disappear at different distances based on the correct answer
-    // Disappear between x:0 and x:0.4*width-haloSize
-    const minDisappearX = 0
-    const maxDisappearX = screenWidth * 0.4 - haloSize
+    // Disappear between middle of screen and 90% of screen width
+    const minDisappearX = screenWidth / 2  // Middle of screen
+    const maxDisappearX = screenWidth * 0.9 - haloSize  // 90% of screen width
     const baseDisappearX = minDisappearX + (maxDisappearX - minDisappearX) * Math.random()
     
     // Apply distance difference to create different travel distances
@@ -75,15 +77,27 @@ export const useHaloAnimation = ({
       haloB: clampedHaloBDisappearX
     }
     
+    // Console log disappearing positions
+    console.log('Halo Disappearing Positions:', {
+      correctAnswer,
+      baseDisappearX: baseDisappearX.toFixed(2),
+      distanceOffset,
+      haloADisappearX: haloADisappearX.toFixed(2),
+      haloBDisappearX: haloBDisappearX.toFixed(2),
+      clampedHaloADisappearX: clampedHaloADisappearX.toFixed(2),
+      clampedHaloBDisappearX: clampedHaloBDisappearX.toFixed(2),
+      screenWidth,
+      minDisappearX,
+      maxDisappearX
+    })
+    
     // Initialize phaseStartTime for phase A
     setAnimationState(prev => ({
       ...prev,
       phase: 'A',
       phaseStartTime: startTime
     }))
-    
-    // Debug logging removed for production
-  }, [isActive, travelSpeed, haloSize, distanceDifference, correctAnswer, screenWidth])
+  }, [isActive, travelSpeed, haloSize, distanceDifference, correctAnswer, screenWidth, trialKey])
 
   // Animation loop
   useEffect(() => {

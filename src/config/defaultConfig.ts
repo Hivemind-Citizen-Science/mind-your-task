@@ -34,7 +34,9 @@ export const DEFAULT_CONFIG: StudyConfig = {
     calibration: {
       enabled: true,
       trials_per_block: 10,
-      parameters: {},
+      parameters: {
+        choice_labels: ['Left', 'Right'],
+      },
     },
     dot_kinematogram: {
       enabled: true,
@@ -45,6 +47,7 @@ export const DEFAULT_CONFIG: StudyConfig = {
         aperture_size: 120,
         dot_count: 3,
         stimulus_duration: 800,
+        choice_labels: ['Left', 'Right'],
       },
     },
     halo_travel: {
@@ -56,6 +59,7 @@ export const DEFAULT_CONFIG: StudyConfig = {
         distance_difference: 50,
         halo_color: '#B0BEC5',
         stimulus_duration: 3000,
+        choice_labels: ['A', 'B'],
       },
     },
   },

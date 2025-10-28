@@ -23,6 +23,7 @@ export const generateDotKinematogramTrials = (
   const apertureSize = taskConfig.parameters?.aperture_size || screenWidth * 0.5
   const dotCount = taskConfig.parameters?.dot_count || 3
   const stimulusDuration = taskConfig.parameters?.stimulus_duration || 800
+  const choiceLabels = taskConfig.parameters?.choice_labels || ['Left', 'Right']
   
   // Calculate trials per coherence level
   const trialsPerCoherence = Math.floor(trialsPerBlock / coherenceLevels.length)
@@ -49,7 +50,8 @@ export const generateDotKinematogramTrials = (
           aperture_shape: apertureShape,
           aperture_size: apertureSize,
           dot_count: dotCount,
-          stimulus_duration: stimulusDuration
+          stimulus_duration: stimulusDuration,
+          choice_labels: choiceLabels
         }
       })
     }
@@ -73,6 +75,7 @@ export const generateDotKinematogramTrialsBalanced = (
   const apertureSize = taskConfig.parameters?.aperture_size || screenWidth * 0.5
   const dotCount = taskConfig.parameters?.dot_count || 3
   const stimulusDuration = taskConfig.parameters?.stimulus_duration || 800
+  const choiceLabels = taskConfig.parameters?.choice_labels || ['Left', 'Right']
   
   // Calculate trials per coherence level
   const trialsPerCoherence = Math.floor(trialsPerBlock / coherenceLevels.length)
@@ -99,7 +102,8 @@ export const generateDotKinematogramTrialsBalanced = (
           aperture_shape: apertureShape,
           aperture_size: apertureSize,
           dot_count: dotCount,
-          stimulus_duration: stimulusDuration
+          stimulus_duration: stimulusDuration,
+          choice_labels: choiceLabels
         }
       })
     }
@@ -117,7 +121,8 @@ export const generateDotKinematogramTrialsBalanced = (
           aperture_shape: apertureShape,
           aperture_size: apertureSize,
           dot_count: dotCount,
-          stimulus_duration: stimulusDuration
+          stimulus_duration: stimulusDuration,
+          choice_labels: choiceLabels
         }
       })
     }

@@ -21,6 +21,7 @@ export const generateHaloTravelTrials = (
   const distanceDifference = taskConfig.parameters?.distance_difference || 50
   const haloColor = taskConfig.parameters?.halo_color || '#B0BEC5'
   const stimulusDuration = taskConfig.parameters?.stimulus_duration || 2000
+  const choiceLabels = taskConfig.parameters?.choice_labels || ['A', 'B']
   
   // Generate balanced A/B trials (10 A, 10 B)
   const trialsPerAnswer = Math.floor(trialsPerBlock / 2)
@@ -41,7 +42,8 @@ export const generateHaloTravelTrials = (
         travel_speed: travelSpeed,
         distance_difference: distanceDifference,
         halo_color: haloColor,
-        stimulus_duration: stimulusDuration
+        stimulus_duration: stimulusDuration,
+        choice_labels: choiceLabels
       }
     })
   }
@@ -59,7 +61,8 @@ export const generateHaloTravelTrials = (
         travel_speed: travelSpeed,
         distance_difference: distanceDifference,
         halo_color: haloColor,
-        stimulus_duration: stimulusDuration
+        stimulus_duration: stimulusDuration,
+        choice_labels: choiceLabels
       }
     })
   }

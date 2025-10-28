@@ -39,8 +39,7 @@ export const CalibrationStimulus: React.FC<CalibrationStimulusProps> = ({
       
       <SwipeInteraction
         onSwipeComplete={handleSwipeComplete}
-        leftLabel="Left"
-        rightLabel="Right"
+        choiceLabels={['Left', 'Right']}
         disabled={false}
       />
     </View>
