@@ -148,7 +148,17 @@ export const useTrialStateMachine = ({
     
     clearTimeouts()
     
-    const isCorrect = choice === trialData.correct_answer
+    const isCorrect = choice.toLowerCase() === trialData.correct_answer.toLowerCase()
+    
+    // Debug case-insensitive comparison
+    console.log('Case-insensitive comparison:', {
+      user_choice: choice,
+      correct_answer: trialData.correct_answer,
+      user_choice_lower: choice.toLowerCase(),
+      correct_answer_lower: trialData.correct_answer.toLowerCase(),
+      is_correct: isCorrect
+    })
+    
     const result: TrialResult = {
       trial_id: trialData.trial_id,
       user_response: choice,
@@ -158,6 +168,22 @@ export const useTrialStateMachine = ({
       timestamp: Date.now(),
       no_response: false,
     }
+    
+    // Comprehensive feedback logging
+    console.log('Trial Feedback Summary:', {
+      trial_id: trialData.trial_id,
+      task_type: trialData.task_type,
+      expected_correct_answer: trialData.correct_answer,
+      user_choice: choice,
+      is_correct: isCorrect,
+      response_time_ms: responseTimeMs,
+      coherence: trialData.trial_parameters?.coherence,
+      direction: trialData.trial_parameters?.direction,
+      aperture_shape: trialData.trial_parameters?.aperture_shape,
+      aperture_size: trialData.trial_parameters?.aperture_size,
+      dot_count: trialData.trial_parameters?.dot_count,
+      stimulus_duration: trialData.trial_parameters?.stimulus_duration
+    })
     
     setTrialResult(result)
     setCurrentState('FEEDBACK')

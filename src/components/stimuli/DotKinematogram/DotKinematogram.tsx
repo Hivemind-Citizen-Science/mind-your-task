@@ -21,6 +21,17 @@ export const DotKinematogram: React.FC<DotKinematogramProps> = ({
     // Start animation immediately when component mounts
     setIsActive(true)
 
+    // Console log trial condition
+    console.log('DotKinematogram Trial Condition:', {
+      coherence: `${coherence}%`,
+      direction,
+      correctAnswer: direction, // Direction is the correct answer
+      apertureShape,
+      apertureSize,
+      dotCount,
+      duration: `${duration}ms`
+    })
+
     // Stop animation after duration
     const stopTimer = setTimeout(() => {
       setIsActive(false)
@@ -29,7 +40,7 @@ export const DotKinematogram: React.FC<DotKinematogramProps> = ({
     return () => {
       clearTimeout(stopTimer)
     }
-  }, [duration])
+  }, [duration, coherence, direction, apertureShape, apertureSize, dotCount])
 
   // Get animated dots
   const dots = useDotAnimation({

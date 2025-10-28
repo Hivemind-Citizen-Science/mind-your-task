@@ -85,15 +85,27 @@ export const TaskScreen: React.FC = () => {
     }
 
     try {
+      // Get the current trial data to access the correct answer
+      const currentTrial = trials[currentTrialIndex]
+      
+      // Debug logging for response comparison
+      console.log('Trial Response Debug:', {
+        trial_id: result.trial_id,
+        user_response: result.user_response,
+        correct_answer: currentTrial.correct_answer,
+        is_correct: result.is_correct,
+        task_type: taskType
+      })
+      
       // Create trial object
       const trial: Trial = {
         trial_id: result.trial_id,
         session_id: session.session_id,
         task_type: taskType,
         trial_number: currentTrialIndex + 1,
-        trial_parameters: {},
+        trial_parameters: currentTrial.trial_parameters,
         user_response: result.user_response,
-        correct_answer: result.user_response, // For now, assume user response is correct
+        correct_answer: currentTrial.correct_answer, // Use the actual correct answer from trial data
         is_correct: result.is_correct,
         response_time_ms: result.response_time_ms,
         trajectory_data: result.trajectory_data,
@@ -173,7 +185,6 @@ export const TaskScreen: React.FC = () => {
       case 'dot_kinematogram':
         const { width: screenWidth } = Dimensions.get('window')
         const dynamicApertureSize = screenWidth * 0.5 // Half screen width
-        console.log('TaskScreen: Overriding aperture size to:', dynamicApertureSize)
         return (
           <DotKinematogram
             coherence={trial.trial_parameters.coherence}
