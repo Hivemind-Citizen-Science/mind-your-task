@@ -36,6 +36,7 @@ export const DEFAULT_CONFIG: StudyConfig = {
       trials_per_block: 10,
       parameters: {
         choice_labels: ['Left', 'Right'],
+        stimulus_duration: 800,
       },
     },
     dot_kinematogram: {

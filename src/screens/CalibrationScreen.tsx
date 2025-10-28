@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
 import { TrialFlow } from '../components/TrialFlow/TrialFlow'
+import { CalibrationStimulus } from '../components/stimuli/CalibrationStimulus'
 import { TrialConfig, TrialResult, Session } from '../types'
 import { generateCalibrationTrialsWithNumbers } from '../utils/trialGenerators/calibrationGenerator'
 import { generateSessionId } from '../utils/uuid'
@@ -150,6 +151,14 @@ export const CalibrationScreen: React.FC = () => {
         showCounter={true}
         currentTrial={currentTrialIndex + 1}
         totalTrials={trials.length}
+        renderStimulus={(trial, onStimulusComplete) => (
+          <CalibrationStimulus
+            direction={trial.trial_parameters?.direction as 'left' | 'right'}
+            duration={trial.trial_parameters?.stimulus_duration}
+            onStimulusComplete={onStimulusComplete}
+          />
+        )}
+        choiceLabels={['Left', 'Right']}
       />
     </SafeAreaView>
   )

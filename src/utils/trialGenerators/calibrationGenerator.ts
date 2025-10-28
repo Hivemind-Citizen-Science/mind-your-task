@@ -11,7 +11,7 @@ const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled
 }
 
-export const generateCalibrationTrials = (choiceLabels: [string, string] = ['Left', 'Right']): TrialConfig[] => {
+export const generateCalibrationTrials = (choiceLabels: [string, string] = ['Left', 'Right'], stimulusDuration: number = 800): TrialConfig[] => {
   const trials: TrialConfig[] = []
   
   // Create 5 left and 5 right trials
@@ -23,7 +23,8 @@ export const generateCalibrationTrials = (choiceLabels: [string, string] = ['Lef
       correct_answer: choiceLabels[0],
       trial_parameters: { 
         direction: 'left',
-        choice_labels: choiceLabels
+        choice_labels: choiceLabels,
+        stimulus_duration: stimulusDuration
       }
     })
     trials.push({
@@ -33,7 +34,8 @@ export const generateCalibrationTrials = (choiceLabels: [string, string] = ['Lef
       correct_answer: choiceLabels[1],
       trial_parameters: { 
         direction: 'right',
-        choice_labels: choiceLabels
+        choice_labels: choiceLabels,
+        stimulus_duration: stimulusDuration
       }
     })
   }
@@ -44,7 +46,8 @@ export const generateCalibrationTrials = (choiceLabels: [string, string] = ['Lef
 
 export const generateCalibrationTrialsWithNumbers = (taskConfig?: TaskConfig): TrialConfig[] => {
   const choiceLabels = taskConfig?.parameters?.choice_labels || ['Left', 'Right']
-  const trials = generateCalibrationTrials(choiceLabels)
+  const stimulusDuration = taskConfig?.parameters?.stimulus_duration || 800
+  const trials = generateCalibrationTrials(choiceLabels, stimulusDuration)
   
   // Reassign trial numbers after shuffling
   return trials.map((trial, index) => ({

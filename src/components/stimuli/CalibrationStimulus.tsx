@@ -1,47 +1,38 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Dimensions } from 'react-native'
-import { SwipeInteraction } from '../SwipeInteraction/SwipeInteraction'
-import { SwipeResult } from '../SwipeInteraction/types'
-import { TrialResult } from '../../types'
-import { colors, typography, spacing } from '../../theme'
+import React, { useEffect } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { colors, typography } from '../../theme'
 
 interface CalibrationStimulusProps {
   direction: 'left' | 'right'
-  onComplete: (result: TrialResult) => void
+  duration?: number
+  onStimulusComplete?: () => void
 }
 
 export const CalibrationStimulus: React.FC<CalibrationStimulusProps> = ({
   direction,
-  onComplete
+  duration = 800,
+  onStimulusComplete
 }) => {
-  const [isActive, setIsActive] = useState(false)
+  // Handle stimulus duration like DotKinematogram
+  useEffect(() => {
+    if (onStimulusComplete) {
+      const timer = setTimeout(() => {
+        onStimulusComplete()
+      }, duration)
 
-  const handleSwipeComplete = (result: SwipeResult) => {
-    const isCorrect = result.choice === direction
-    onComplete({
-      trial_id: `trial-${Date.now()}`,
-      user_response: result.choice,
-      is_correct: isCorrect,
-      response_time_ms: result.responseTimeMs,
-      trajectory_data: result.trajectoryData,
-      timestamp: Date.now(),
-      no_response: false
-    })
-  }
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [onStimulusComplete, duration])
 
   return (
     <View style={styles.container}>
-      <View style={styles.instructionContainer}>
-        <Text style={styles.instruction}>
-          Swipe {direction} when ready
+      {/* <View style={styles.stimulusContainer}> */}
+        <Text style={styles.stimulus}>
+          {direction.toUpperCase()}
         </Text>
-      </View>
-      
-      <SwipeInteraction
-        onSwipeComplete={handleSwipeComplete}
-        choiceLabels={['Left', 'Right']}
-        disabled={false}
-      />
+      {/* </View> */}
     </View>
   )
 }
@@ -49,19 +40,24 @@ export const CalibrationStimulus: React.FC<CalibrationStimulusProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
-  },
-  instructionContainer: {
-    position: 'absolute',
-    top: 100,
-    left: 0,
-    right: 0,
+    // backgroundColor: colors.background,
+    justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
+    // paddingHorizontal: 20,
+    paddingVertical: 40,
   },
-  instruction: {
-    ...typography.heading2,
+  stimulusContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  stimulus: {
+    // ...typography.heading1,
     color: colors.textPrimary,
-    textAlign: 'center',
+    // textAlign: 'center',
+    fontSize: 48,
+    fontWeight: 'bold',
+    // includeFontPadding: false,
+    // textAlignVertical: 'center',
   },
 })

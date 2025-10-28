@@ -177,8 +177,9 @@ export const TaskScreen: React.FC = () => {
       case 'calibration':
         return (
           <CalibrationStimulus
-            direction={trial.trial_parameters.direction}
-            onComplete={commonProps.onComplete}
+            direction={trial.trial_parameters?.direction as 'left' | 'right'}
+            duration={trial.trial_parameters?.stimulus_duration}
+            onStimulusComplete={onStimulusComplete}
           />
         )
       
