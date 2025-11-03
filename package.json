@@ -23,6 +23,7 @@
     "expo-notifications": "~0.29.14",
     "expo-secure-store": "~14.0.1",
     "expo-status-bar": "~2.0.1",
+    "lottie-react-native": "7.1.0",
     "patch-package": "^8.0.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -42,6 +43,7 @@
     "@babel/plugin-transform-nullish-coalescing-operator": "^7.27.1",
     "@babel/plugin-transform-optional-chaining": "^7.27.1",
     "@types/react": "~18.3.12",
+    "babel-plugin-module-resolver": "^5.0.2",
     "typescript": "^5.3.3"
   },
   "private": true

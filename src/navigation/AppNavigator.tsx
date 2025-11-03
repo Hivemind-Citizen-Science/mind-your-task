@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import OnboardingScreen from '../screens/onboarding/Index'
 import { WelcomeScreen } from '../screens/WelcomeScreen'
 import { CalibrationScreen } from '../screens/CalibrationScreen'
 import { HomeScreen } from '../screens/HomeScreen'
@@ -25,13 +26,17 @@ export const AppNavigator: React.FC = () => {
     <NavigationContainer>
       <GlobalDrawer>
         <Stack.Navigator 
-          initialRouteName="Home"
+          initialRouteName="Onboarding"
           screenOptions={{ 
             headerShown: false,
             gestureEnabled: true,
             animation: 'slide_from_right',
           }}
         >
+          <Stack.Screen 
+            name="Onboarding" 
+            component={OnboardingScreen}
+          />
           <Stack.Screen name="Welcome">
             {({ navigation }) => (
               <WelcomeScreen onGetStarted={() => navigation.navigate('Calibration')} />
