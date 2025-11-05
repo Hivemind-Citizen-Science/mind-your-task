@@ -16,14 +16,14 @@ const slides = [
     {
         id: '1',
         title: 'Mind Your Task',
-        image: require('@/assets/lottie/welcome-3.json'),
-        description: "Let's begin your journey of contribution to science ",
+        image: require('@/assets/lottie/welcome-2.json'),
+        description: "Let's begin your journey of contribution to science, at your fingertips. ",
     },
     {
         id: '2',
         title: 'Cognitive Science',
-        image: require('@/assets/lottie/welcome-2.json'),
-        description: 'Modelling the human mind, one task at a time',
+        image: require('@/assets/lottie/welcome-3.json'),
+        description: 'Modelling the human mind, one task at a time.',
     },
     {
         id: '3',
@@ -73,9 +73,6 @@ export default function OnboardingScreen() {
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.description}>{item.description}</Text>
                     </View>
-                )}
-                ListFooterComponent={() => (
-                    <View style={styles.footerSpacing} />
                 )}
                 keyExtractor={(item) => item.id}
             />
@@ -130,10 +127,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         width: '66%',
         marginTop: spacing.sm,
-    },
-    footerSpacing: {
-        width: windowWidth,
-        height: spacing.xxl * 2,
     },
     indicatorContainer: {
         flexDirection: 'row',
