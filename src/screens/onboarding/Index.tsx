@@ -15,21 +15,21 @@ const windowWidth = Dimensions.get('window').width;
 const slides = [
     {
         id: '1',
-        title: 'Simple onboarding',
+        title: 'Mind Your Task',
         image: require('@/assets/lottie/welcome-3.json'),
-        description: 'Complete shopping experience',
+        description: "Let's begin your journey of contribution to science ",
     },
     {
         id: '2',
-        title: 'Copy and paste',
+        title: 'Cognitive Science',
         image: require('@/assets/lottie/welcome-2.json'),
-        description: 'Elegant design for your shopping app',
+        description: 'Modelling the human mind, one task at a time',
     },
     {
         id: '3',
-        title: 'Free to use',
+        title: 'Offline First',
         image: require('@/assets/lottie/welcome-1.json'),
-        description: 'Easily modify themes, layouts, and state management for your app.',
+        description: 'We use intertnet only to save your experiment performance data to our secure database.',
     },
 ];
 
@@ -44,7 +44,7 @@ export default function OnboardingScreen() {
     };
 
     const handleGetStarted = () => {
-        navigation.navigate('Welcome');
+        navigation.navigate('Home');
     };
 
     const isLastSlide = currentIndex === slides.length - 1;
