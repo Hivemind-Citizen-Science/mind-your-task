@@ -8,7 +8,7 @@
     "userInterfaceStyle": "dark",
     "splash": {
       "image": "./src/assets/splash.png",
-      "resizeMode": "cover",
+      "resizeMode": "stretch",
       "backgroundColor": "#4A90E2"
     },
     "platforms": [
